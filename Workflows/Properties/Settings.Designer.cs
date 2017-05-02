@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Workflows.Properties {
+namespace UltimateWorkflowToolkit.CoreOperations.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
