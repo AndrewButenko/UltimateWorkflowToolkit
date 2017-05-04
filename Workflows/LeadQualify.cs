@@ -5,7 +5,7 @@ using Microsoft.Crm.Sdk.Messages;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class LeadQualify : CodeActivity
+    public class LeadQualify : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -57,12 +57,8 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var context = executionContext.GetExtension<IWorkflowContext>();
-            var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-
             var qualifyLeadRequest = new QualifyLeadRequest()
             {
                 CreateAccount = IsCreateAccont.Get(executionContext),
@@ -82,7 +78,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
                 qualifyLeadRequest.OpportunityCustomerId = OpportunityCustomerContact.Get(executionContext);
             }
 
-            var qualifyLeadResponse = (QualifyLeadResponse) service.Execute(qualifyLeadRequest);
+            var qualifyLeadResponse = (QualifyLeadResponse)service.Execute(qualifyLeadRequest);
 
             foreach (var createdEntity in qualifyLeadResponse.CreatedEntities)
             {
@@ -99,8 +95,6 @@ namespace UltimateWorkflowToolkit.CoreOperations
                         break;
                 }
             }
-            
-
         }
     }
 }

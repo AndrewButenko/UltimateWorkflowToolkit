@@ -6,7 +6,7 @@ using Microsoft.Crm.Sdk.Messages;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityWin : CodeActivity
+    public class OpportunityWin : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -36,12 +36,8 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var context = executionContext.GetExtension<IWorkflowContext>();
-            var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-
             var opportunityClose = new Entity("opportunityclose")
             {
                 ["subject"] = Subject.Get(executionContext),

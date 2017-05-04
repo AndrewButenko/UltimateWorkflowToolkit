@@ -6,7 +6,7 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateQuote : CodeActivity
+    public class OpportunityGenerateQuote : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -21,12 +21,8 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void Execute(CodeActivityContext executionContext)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var context = executionContext.GetExtension<IWorkflowContext>();
-            var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-
             var generateQuoteFromOpportunityRequest = new GenerateQuoteFromOpportunityRequest
             {
                 OpportunityId = Opportunity.Get(executionContext).Id,
@@ -34,7 +30,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
             };
 
             var generateQuoteFromOpportunityResponse =
-                (GenerateQuoteFromOpportunityResponse) service.Execute(generateQuoteFromOpportunityRequest);
+                (GenerateQuoteFromOpportunityResponse)service.Execute(generateQuoteFromOpportunityRequest);
 
             Quote.Set(executionContext, generateQuoteFromOpportunityResponse.Entity.ToEntityReference());
         }
