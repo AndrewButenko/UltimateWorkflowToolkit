@@ -11,6 +11,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         [Input("Throw an Exception on Error")]
         [RequiredArgument]
+        [Default("True")]
         public InArgument<bool> IsThrowException { get; set; }
 
         [Output("Error Occured")]
@@ -26,6 +27,8 @@ namespace UltimateWorkflowToolkit.CoreOperations
             var context = executionContext.GetExtension<IWorkflowContext>();
             var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
             var service = serviceFactory.CreateOrganizationService(context.UserId);
+
+            //ToDo: Include validation of InArguments that are marked as required
 
             try
             {
