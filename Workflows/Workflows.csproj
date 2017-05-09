@@ -79,9 +79,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrmWorkflowBase.cs" />
+    <Compile Include="Incident\IncidentGetResolution.cs" />
+    <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
+    <Compile Include="Invoice\InvoiceLockPricing.cs" />
+    <Compile Include="Invoice\InvoiceUnlockPricing.cs" />
     <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
     <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
     <Compile Include="Opportunity\OpportunityGenerateSalesOrder.cs" />
+    <Compile Include="Opportunity\OpportunityGetResolution.cs" />
     <Compile Include="Opportunity\OpportunityLose.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -91,11 +96,13 @@
     </Compile>
     <Compile Include="LeadQualify.cs" />
     <Compile Include="Opportunity\OpportunityWin.cs" />
+    <Compile Include="Quote\QuoteGetResolution.cs" />
     <Compile Include="Quote\QuoteClose.cs" />
     <Compile Include="Quote\QuoteConvertToSalesOrder.cs" />
     <Compile Include="Quote\QuoteGetProductsFromOpportunity.cs" />
     <Compile Include="Quote\QuoteRevise.cs" />
     <Compile Include="Quote\QuoteWin.cs" />
+    <Compile Include="SalesOrder\SalesOrderGetResolution.cs" />
     <Compile Include="SalesOrder\SalesOrderClose.cs" />
     <Compile Include="SalesOrder\SalesOrderConvertToInvoice.cs" />
     <Compile Include="SalesOrder\SalesOrderFulfill.cs" />
