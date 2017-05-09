@@ -79,10 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrmWorkflowBase.cs" />
-    <Compile Include="OpportunityGenerateInvoice.cs" />
-    <Compile Include="OpportunityGenerateQuote.cs" />
-    <Compile Include="OpportunityGenerateSalesOrder.cs" />
-    <Compile Include="OpportunityLose.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateSalesOrder.cs" />
+    <Compile Include="Opportunity\OpportunityLose.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -90,12 +90,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="LeadQualify.cs" />
-    <Compile Include="OpportunityWin.cs" />
-    <Compile Include="QuoteClose.cs" />
-    <Compile Include="QuoteConvertToSalesOrder.cs" />
-    <Compile Include="QuoteGetProductsFromOpportunity.cs" />
-    <Compile Include="QuoteRevise.cs" />
-    <Compile Include="QuoteWin.cs" />
+    <Compile Include="Opportunity\OpportunityWin.cs" />
+    <Compile Include="Quote\QuoteClose.cs" />
+    <Compile Include="Quote\QuoteConvertToSalesOrder.cs" />
+    <Compile Include="Quote\QuoteGetProductsFromOpportunity.cs" />
+    <Compile Include="Quote\QuoteRevise.cs" />
+    <Compile Include="Quote\QuoteWin.cs" />
+    <Compile Include="SalesOrder\SalesOrderClose.cs" />
+    <Compile Include="SalesOrder\SalesOrderConvertToInvoice.cs" />
+    <Compile Include="SalesOrder\SalesOrderFulfill.cs" />
+    <Compile Include="SalesOrder\SalesOrderGetProductsFromOpportunity.cs" />
+    <Compile Include="SalesOrder\SalesOrderLockPricing.cs" />
+    <Compile Include="SalesOrder\SalesOrderUnlockPricing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

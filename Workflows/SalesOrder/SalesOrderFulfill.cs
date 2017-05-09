@@ -3,51 +3,50 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class QuoteWin: CrmWorkflowBase
+    public class SalesOrderFulfill: CrmWorkflowBase
     {
         #region Input/Output Parameters
 
-        [Input("Quote")]
-        [ReferenceTarget("quote")]
+        [Input("Order")]
+        [ReferenceTarget("salesorder")]
         [RequiredArgument]
-        public InArgument<EntityReference> Quote { get; set; }
+        public InArgument<EntityReference> SalesOrder { get; set; }
 
-        [Input("Quote Status")]
-        [AttributeTarget("quote", "statuscode")]
+        [Input("Order Status")]
+        [AttributeTarget("salesorder", "statuscode")]
         [RequiredArgument]
-        public InArgument<OptionSetValue> QuoteStatus { get; set; }
+        public InArgument<OptionSetValue> SalesOrderStatus { get; set; }
 
-        [Input("Quote Close: Subject")]
+        [Input("Order Close: Subject")]
         public InArgument<string> Subject { get; set; }
 
-        [Input("Quote Close: Close Date")]
+        [Input("Order Close: Close Date")]
         [RequiredArgument]
         public InArgument<DateTime> CloseDate { get; set; }
 
-        [Input("Quote Close: Description")]
+        [Input("Order Close: Description")]
         public InArgument<string> Description { get; set; }
 
         #endregion Input/Output Parameters
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var winQuoteRecuest = new WinQuoteRequest()
+            var fulfillSalesOrderRequest = new FulfillSalesOrderRequest()
             {
-                Status = QuoteStatus.Get(executionContext),
-                QuoteClose = new Entity("quoteclose")
+                Status = SalesOrderStatus.Get(executionContext),
+                OrderClose = new Entity("orderclose")
                 {
                     ["subject"] = Subject.Get(executionContext),
-                    ["quoteid"] = Quote.Get(executionContext),
+                    ["salesorderid"] = SalesOrder.Get(executionContext),
                     ["actualend"] = CloseDate.Get(executionContext),
                     ["description"] = Description.Get(executionContext)
                 }
             };
 
-            service.Execute(winQuoteRecuest);
+            service.Execute(fulfillSalesOrderRequest);
         }
     }
 }
