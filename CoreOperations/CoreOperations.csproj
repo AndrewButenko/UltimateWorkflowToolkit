@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Delete.cs" />
     <Compile Include="Incident\IncidentGetResolution.cs" />
     <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
     <Compile Include="Invoice\InvoiceLockPricing.cs" />
@@ -93,7 +94,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="LeadQualify.cs" />
+    <Compile Include="Lead\LeadQualify.cs" />
     <Compile Include="Opportunity\OpportunityWin.cs" />
     <Compile Include="Quote\QuoteGetResolution.cs" />
     <Compile Include="Quote\QuoteClose.cs" />
