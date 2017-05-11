@@ -45,7 +45,7 @@
     </Reference>
     <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Xrm.Sdk, Version=8.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.8.2.0.2\lib\net452\Microsoft.Xrm.Sdk.dll</HintPath>
@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Incident\IncidentClose.cs" />
     <Compile Include="Incident\IncidentGetResolution.cs" />
     <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
     <Compile Include="Invoice\InvoiceLockPricing.cs" />
@@ -130,12 +131,18 @@
     <Content Include="BuildScript\ILMerge.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>cmd /c 
-echo If the build.ps1 script fails during the build process verify that you have executed "Set-ExecutionPolicy unrestricted" in both the 32 bit and 64 bit version of the powershell console. &gt;_POWERSHELLNOTENABLED.txt
-powershell.exe -file "$(ProjectDir)\BuildScript\Build.ps1" -targetDir "$(TargetDir)  " -targetFile $(TargetFileName) -targetName $(TargetName)
-xcopy "$(TargetDir)pluginsmerged\$(TargetFileName)" "$(TargetDir)" /y</PostBuildEvent>
-  </PropertyGroup>
+  <UsingTask TaskName="ILMerge.MSBuild.Tasks.ILMerge" AssemblyFile="$(SolutionDir)\packages\ILMerge.MSBuild.Tasks.1.0.0.3\tools\ILMerge.MSBuild.Tasks.dll" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <MergeAsm Include="$(OutDir)$(TargetFileName)" />
+      <MergeAsm Include="$(OutDir)UltimateWorkflowToolkit.Common.dll" />
+    </ItemGroup>
+    <PropertyGroup>
+      <MergedAssembly>$(TargetDir)UltimateWorkflowToolkit.CoreOperations.dll</MergedAssembly>
+    </PropertyGroup>
+    <Message Text="ILMerge @(MergeAsm) -&gt; $(MergedAssembly)" Importance="high" />
+    <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(MergedAssembly)" SnkFile="$(ProjectDir)Key.snk" TargetKind="SameAsPrimaryAssembly" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
