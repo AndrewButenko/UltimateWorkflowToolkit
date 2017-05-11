@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="LeadQualify.cs" />
     <Compile Include="OpportunityWin.cs" />
+    <Compile Include="CaseClose.cs" />
     <Compile Include="QuoteClose.cs" />
     <Compile Include="QuoteConvertToSalesOrder.cs" />
     <Compile Include="QuoteGetProductsFromOpportunity.cs" />
