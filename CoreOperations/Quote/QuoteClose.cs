@@ -3,11 +3,11 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class QuoteWin: CrmWorkflowBase
+    public class QuoteClose : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -35,7 +35,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var winQuoteRecuest = new WinQuoteRequest()
+            var quoteCloseRequest = new CloseQuoteRequest()
             {
                 Status = QuoteStatus.Get(executionContext),
                 QuoteClose = new Entity("quoteclose")
@@ -47,7 +47,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
                 }
             };
 
-            service.Execute(winQuoteRecuest);
+            service.Execute(quoteCloseRequest);
         }
     }
 }

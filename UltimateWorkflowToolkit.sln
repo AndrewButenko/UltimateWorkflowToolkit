@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Workflows", "Workflows\Workflows.csproj", "{2110F684-C277-47E7-B8B9-6F17A579D0CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreOperations", "CoreOperations\CoreOperations.csproj", "{2110F684-C277-47E7-B8B9-6F17A579D0CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2110F684-C277-47E7-B8B9-6F17A579D0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2110F684-C277-47E7-B8B9-6F17A579D0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2110F684-C277-47E7-B8B9-6F17A579D0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -78,11 +78,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CrmWorkflowBase.cs" />
-    <Compile Include="OpportunityGenerateInvoice.cs" />
-    <Compile Include="OpportunityGenerateQuote.cs" />
-    <Compile Include="OpportunityGenerateSalesOrder.cs" />
-    <Compile Include="OpportunityLose.cs" />
+    <Compile Include="Incident\IncidentGetResolution.cs" />
+    <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
+    <Compile Include="Invoice\InvoiceLockPricing.cs" />
+    <Compile Include="Invoice\InvoiceUnlockPricing.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
+    <Compile Include="Opportunity\OpportunityGenerateSalesOrder.cs" />
+    <Compile Include="Opportunity\OpportunityGetResolution.cs" />
+    <Compile Include="Opportunity\OpportunityLose.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -90,15 +94,24 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="LeadQualify.cs" />
-    <Compile Include="OpportunityWin.cs" />
-    <Compile Include="CaseClose.cs" />
-    <Compile Include="QuoteClose.cs" />
-    <Compile Include="QuoteConvertToSalesOrder.cs" />
-    <Compile Include="QuoteGetProductsFromOpportunity.cs" />
-    <Compile Include="QuoteRevise.cs" />
-    <Compile Include="QuoteWin.cs" />
+    <Compile Include="Opportunity\OpportunityWin.cs" />
+    <Compile Include="Quote\QuoteGetResolution.cs" />
+    <Compile Include="Quote\QuoteClose.cs" />
+    <Compile Include="Quote\QuoteConvertToSalesOrder.cs" />
+    <Compile Include="Quote\QuoteGetProductsFromOpportunity.cs" />
+    <Compile Include="Quote\QuoteRevise.cs" />
+    <Compile Include="Quote\QuoteWin.cs" />
+    <Compile Include="SalesOrder\SalesOrderGetResolution.cs" />
+    <Compile Include="SalesOrder\SalesOrderClose.cs" />
+    <Compile Include="SalesOrder\SalesOrderConvertToInvoice.cs" />
+    <Compile Include="SalesOrder\SalesOrderFulfill.cs" />
+    <Compile Include="SalesOrder\SalesOrderGetProductsFromOpportunity.cs" />
+    <Compile Include="SalesOrder\SalesOrderLockPricing.cs" />
+    <Compile Include="SalesOrder\SalesOrderUnlockPricing.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="BuildScript\Build.ps1" />
+    <None Include="BuildScript\Key.snk" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -106,8 +119,23 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Content Include="BuildScript\ILMerge.exe" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>cmd /c 
+echo If the build.ps1 script fails during the build process verify that you have executed "Set-ExecutionPolicy unrestricted" in both the 32 bit and 64 bit version of the powershell console. &gt;_POWERSHELLNOTENABLED.txt
+powershell.exe -file "$(ProjectDir)\BuildScript\Build.ps1" -targetDir "$(TargetDir)  " -targetFile $(TargetFileName) -targetName $(TargetName)
+xcopy "$(TargetDir)pluginsmerged\$(TargetFileName)" "$(TargetDir)" /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

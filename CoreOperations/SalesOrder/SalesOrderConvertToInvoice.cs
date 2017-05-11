@@ -3,17 +3,18 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateInvoice : CrmWorkflowBase
+    public class SalesOrderConvertToInvoice: CrmWorkflowBase
     {
         #region Input/Output Parameters
 
-        [Input("Opportunity")]
-        [ReferenceTarget("opportunity")]
+        [Input("Order")]
+        [ReferenceTarget("salesorder")]
         [RequiredArgument]
-        public InArgument<EntityReference> Opportunity { get; set; }
+        public InArgument<EntityReference> SalesOrder { get; set; }
 
         [Output("Invoice")]
         [ReferenceTarget("invoice")]
@@ -23,16 +24,16 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var generateInvoiceFromOpportunityRequest = new GenerateInvoiceFromOpportunityRequest
+            var convertSalesOrderToInvoiceRequest = new ConvertSalesOrderToInvoiceRequest
             {
-                OpportunityId = Opportunity.Get(executionContext).Id,
+                SalesOrderId = SalesOrder.Get(executionContext).Id,
                 ColumnSet = new ColumnSet("invoiceid")
             };
 
-            var generateInvoiceFromOpportunityResponse =
-                (GenerateInvoiceFromOpportunityResponse)service.Execute(generateInvoiceFromOpportunityRequest);
+            var convertSalesOrderToInvoiceResponse =
+                (ConvertSalesOrderToInvoiceResponse)service.Execute(convertSalesOrderToInvoiceRequest);
 
-            Invoice.Set(executionContext, generateInvoiceFromOpportunityResponse.Entity.ToEntityReference());
+            Invoice.Set(executionContext, convertSalesOrderToInvoiceResponse.Entity.ToEntityReference());
         }
     }
 }

@@ -2,17 +2,19 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class QuoteGetProductsFromOpportunity: CrmWorkflowBase
+    public class InvoiceGetProductsFromOpportunity : CrmWorkflowBase
     {
+
         #region Input/Output Parameters
 
-        [Input("Quote")]
-        [ReferenceTarget("quote")]
+        [Input("Invoice")]
+        [ReferenceTarget("invoice")]
         [RequiredArgument]
-        public InArgument<EntityReference> Quote { get; set; }
+        public InArgument<EntityReference> Invoice { get; set; }
 
         [Input("Opportunity")]
         [ReferenceTarget("opportunity")]
@@ -23,13 +25,13 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var getQuoteProductsFromOpportunityRequest = new GetQuoteProductsFromOpportunityRequest()
+            var getInvoiceProductsFromOpportunityRequest = new GetInvoiceProductsFromOpportunityRequest()
             {
-                QuoteId = Quote.Get(executionContext).Id,
+                InvoiceId = Invoice.Get(executionContext).Id,
                 OpportunityId = Opportunity.Get(executionContext).Id
             };
 
-            service.Execute(getQuoteProductsFromOpportunityRequest);
+            service.Execute(getInvoiceProductsFromOpportunityRequest);
         }
     }
 }

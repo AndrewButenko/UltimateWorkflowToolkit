@@ -3,10 +3,11 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateQuote : CrmWorkflowBase
+    public class OpportunityGenerateInvoice : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -15,24 +16,24 @@ namespace UltimateWorkflowToolkit.CoreOperations
         [RequiredArgument]
         public InArgument<EntityReference> Opportunity { get; set; }
 
-        [Output("Quote")]
-        [ReferenceTarget("quote")]
-        public OutArgument<EntityReference> Quote { get; set; }
+        [Output("Invoice")]
+        [ReferenceTarget("invoice")]
+        public OutArgument<EntityReference> Invoice { get; set; }
 
         #endregion Input/Output Parameters
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var generateQuoteFromOpportunityRequest = new GenerateQuoteFromOpportunityRequest
+            var generateInvoiceFromOpportunityRequest = new GenerateInvoiceFromOpportunityRequest
             {
                 OpportunityId = Opportunity.Get(executionContext).Id,
-                ColumnSet = new ColumnSet("quoteid")
+                ColumnSet = new ColumnSet("invoiceid")
             };
 
-            var generateQuoteFromOpportunityResponse =
-                (GenerateQuoteFromOpportunityResponse)service.Execute(generateQuoteFromOpportunityRequest);
+            var generateInvoiceFromOpportunityResponse =
+                (GenerateInvoiceFromOpportunityResponse)service.Execute(generateInvoiceFromOpportunityRequest);
 
-            Quote.Set(executionContext, generateQuoteFromOpportunityResponse.Entity.ToEntityReference());
+            Invoice.Set(executionContext, generateInvoiceFromOpportunityResponse.Entity.ToEntityReference());
         }
     }
 }

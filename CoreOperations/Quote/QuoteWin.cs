@@ -3,11 +3,11 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class QuoteConvertToSalesOrder: CrmWorkflowBase
+    public class QuoteWin: CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -31,28 +31,23 @@ namespace UltimateWorkflowToolkit.CoreOperations
         [Input("Quote Close: Description")]
         public InArgument<string> Description { get; set; }
 
-        [Output("Sales Order")]
-        [ReferenceTarget("salesorder")]
-        public OutArgument<EntityReference> SalesOrder { get; set; }
-
         #endregion Input/Output Parameters
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var convertQuoteToSalesOrderRequest = new ConvertQuoteToSalesOrderRequest()
+            var winQuoteRecuest = new WinQuoteRequest()
             {
-                ColumnSet = new ColumnSet("salesorderid"),
-                QuoteCloseDate = CloseDate.Get(executionContext),
-                QuoteCloseDescription = Description.Get(executionContext),
-                QuoteCloseStatus = QuoteStatus.Get(executionContext),
-                QuoteCloseSubject = Subject.Get(executionContext),
-                QuoteId = Quote.Get(executionContext).Id
+                Status = QuoteStatus.Get(executionContext),
+                QuoteClose = new Entity("quoteclose")
+                {
+                    ["subject"] = Subject.Get(executionContext),
+                    ["quoteid"] = Quote.Get(executionContext),
+                    ["actualend"] = CloseDate.Get(executionContext),
+                    ["description"] = Description.Get(executionContext)
+                }
             };
 
-            var convertQuoteToSalesOrderResponse =
-                (ConvertQuoteToSalesOrderResponse) service.Execute(convertQuoteToSalesOrderRequest);
-
-            SalesOrder.Set(executionContext, convertQuoteToSalesOrderResponse.Entity.ToEntityReference());
+            service.Execute(winQuoteRecuest);
         }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Xrm.Sdk.Workflow;
 using System;
 using System.Activities;
 using Microsoft.Crm.Sdk.Messages;
+using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
