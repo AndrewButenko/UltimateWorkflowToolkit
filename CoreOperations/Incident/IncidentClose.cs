@@ -24,12 +24,11 @@ namespace UltimateWorkflowToolkit.CoreOperations
         [Input("Case Close: Subject")]
         public InArgument<string> Subject { get; set; }
 
-        [Input("Case Close: Close Date")]
-        [RequiredArgument]
-        public InArgument<DateTime> CloseDate { get; set; }
-
         [Input("Case Close: Description")]
         public InArgument<string> Description { get; set; }
+
+        [Input("Case Close: Time Spent")]
+        public InArgument<int> TimeSpent { get; set; }
 
         #endregion Input/Output Parameters
 
@@ -42,8 +41,8 @@ namespace UltimateWorkflowToolkit.CoreOperations
                 {
                     ["subject"] = Subject.Get(executionContext),
                     ["incidentid"] = Incident.Get(executionContext),
-                    ["actualend"] = CloseDate.Get(executionContext),
-                    ["description"] = Description.Get(executionContext)
+                    ["description"] = Description.Get(executionContext),
+                    ["timespent"] = TimeSpent.Get(executionContext)
                 }
             };
 
