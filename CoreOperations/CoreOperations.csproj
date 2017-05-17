@@ -55,6 +55,10 @@
       <HintPath>..\packages\Microsoft.CrmSdk.Workflow.8.2.0.2\lib\net452\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Activities" />
@@ -84,6 +88,10 @@
     <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
     <Compile Include="Invoice\InvoiceLockPricing.cs" />
     <Compile Include="Invoice\InvoiceUnlockPricing.cs" />
+    <Compile Include="NtoN\AddMemberToMarketingList.cs" />
+    <Compile Include="NtoN\AssociateEntities.cs" />
+    <Compile Include="NtoN\DisassociateEntities.cs" />
+    <Compile Include="NtoN\RemoveMemberFromMarketingList.cs" />
     <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
     <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
     <Compile Include="Opportunity\OpportunityGenerateSalesOrder.cs" />
@@ -136,6 +144,7 @@
   <Target Name="AfterBuild">
     <ItemGroup>
       <MergeAsm Include="$(OutDir)$(TargetFileName)" />
+      <MergeAsm Include="$(OutDir)Newtonsoft.Json.dll" />
       <MergeAsm Include="$(OutDir)UltimateWorkflowToolkit.Common.dll" />
     </ItemGroup>
     <PropertyGroup>

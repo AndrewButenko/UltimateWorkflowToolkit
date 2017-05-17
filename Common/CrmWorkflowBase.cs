@@ -5,6 +5,8 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 
 namespace UltimateWorkflowToolkit.Common
 {
@@ -60,9 +62,34 @@ namespace UltimateWorkflowToolkit.Common
 
         #endregion Overrides
 
-        #region Common Methods
+        #region Publics
 
-        public EntityReference ParseUrlToEntityReference(string url, IOrganizationService service)
+        public EntityReference ConvertToEntityReference(string recordReference, IOrganizationService service)
+        {
+            Uri uriResult;
+
+            if (Uri.TryCreate(recordReference, UriKind.Absolute, out uriResult))
+            {
+                return ParseUrlToEntityReference(recordReference, service);
+            }
+
+            try
+            {
+                var jsonEntityReference = JsonConvert.DeserializeObject<JsonEntityReference>(recordReference);
+
+                return new EntityReference(jsonEntityReference.LogicName, jsonEntityReference.Id);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Error converting string '{recordReference}' to EntityReference - {e.Message}", e);
+            }
+        }
+
+        #endregion Publics
+
+        #region Privates
+
+        private EntityReference ParseUrlToEntityReference(string url, IOrganizationService service)
         {
             var uri = new Uri(url);
 
@@ -116,7 +143,7 @@ namespace UltimateWorkflowToolkit.Common
             return null;
         }
 
-        #endregion Common Methods
+        #endregion Privates
 
     }
 
@@ -124,5 +151,14 @@ namespace UltimateWorkflowToolkit.Common
     {
         Asynchronous = 0,
         RealTime = 1
+    }
+
+    public class JsonEntityReference
+    {
+        [JsonProperty(PropertyName = "entityType")]
+        public string LogicName { get; set; }
+
+        [JsonProperty(PropertyName = "id")]
+        public Guid Id { get; set; }
     }
 }

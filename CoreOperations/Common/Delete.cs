@@ -17,7 +17,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
         {
-            var target = ParseUrlToEntityReference(RecordUrl.Get(executionContext), service);
+            var target = ConvertToEntityReference(RecordUrl.Get(executionContext), service);
 
             service.Delete(target.LogicalName, target.Id);
         }
