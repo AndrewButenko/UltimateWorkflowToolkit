@@ -2,11 +2,12 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Query;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 {
-    public class RemoveMemberFromMarketingList : CrmWorkflowBase
+    public class RemoveMemberFromAllMarketingLists : CrmWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -14,22 +15,26 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
         [RequiredArgument]
         public InArgument<string> Record { get; set; }
 
-        [Input("Marketing List")]
-        [RequiredArgument]
-        [ReferenceTarget("list")]
-        public InArgument<EntityReference> List { get; set; }
-
         #endregion Input/Output Parameters
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
             var record = ConvertToEntityReference(Record.Get(executionContext), service);
 
-            service.Execute(new RemoveMemberListRequest()
+            var listsQuery = new QueryExpression("list")
+            {
+                ColumnSet = new ColumnSet(false)
+            };
+            var listMemberLink = listsQuery.AddLink("listmember", "listid", "listid");
+            listMemberLink.LinkCriteria.AddCondition("entityid", ConditionOperator.Equal, record.Id);
+
+            var allLists = QueryWithPaging(listsQuery, service);
+
+            allLists.ForEach(l => service.Execute(new RemoveMemberListRequest()
             {
                 EntityId = record.Id,
-                ListId = List.Get(executionContext).Id
-            });
+                ListId = l.Id
+            }));
         }
     }
 }

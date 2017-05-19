@@ -91,6 +91,7 @@
     <Compile Include="NtoN\AddMemberToMarketingList.cs" />
     <Compile Include="NtoN\AssociateEntities.cs" />
     <Compile Include="NtoN\DisassociateEntities.cs" />
+    <Compile Include="NtoN\RemoveMemberFromAllMarketingLists.cs" />
     <Compile Include="NtoN\RemoveMemberFromMarketingList.cs" />
     <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
     <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
@@ -118,6 +119,16 @@
     <Compile Include="SalesOrder\SalesOrderGetProductsFromOpportunity.cs" />
     <Compile Include="SalesOrder\SalesOrderLockPricing.cs" />
     <Compile Include="SalesOrder\SalesOrderUnlockPricing.cs" />
+    <Compile Include="Security\AddUserToRecordTeam.cs" />
+    <Compile Include="Security\AddUserToTeam.cs" />
+    <Compile Include="Security\IsUserHasRole.cs" />
+    <Compile Include="Security\IsUserMemberOfTeam.cs" />
+    <Compile Include="Security\RemoveUserFromRecordTeam.cs" />
+    <Compile Include="Security\RemoveUserFromTeam.cs" />
+    <Compile Include="Security\ShareRecordWithTeam.cs" />
+    <Compile Include="Security\ShareRecordWithUser.cs" />
+    <Compile Include="Security\UnshareRecordWithTeam.cs" />
+    <Compile Include="Security\UnshareRecordWithUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildScript\Build.ps1" />

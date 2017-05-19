@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Activities;
+using System.Collections.Generic;
+using System.Windows.Documents;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata.Query;
@@ -30,7 +32,7 @@ namespace UltimateWorkflowToolkit.Common
         #region Abstract methods
 
         protected abstract void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service);
+            IOrganizationService service, IOrganizationService sysService);
 
         #endregion Abstracts methods    
 
@@ -41,12 +43,13 @@ namespace UltimateWorkflowToolkit.Common
             var context = executionContext.GetExtension<IWorkflowContext>();
             var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
             var service = serviceFactory.CreateOrganizationService(context.UserId);
+            var systemService = serviceFactory.CreateOrganizationService(null);
 
             //ToDo: Include validation of InArguments that are marked as required
 
             try
             {
-                ExecuteWorkflowLogic(executionContext, context, service);
+                ExecuteWorkflowLogic(executionContext, context, service, systemService);
 
                 IsExceptionOccured.Set(executionContext, false);
             }
@@ -83,6 +86,48 @@ namespace UltimateWorkflowToolkit.Common
             {
                 throw new Exception($"Error converting string '{recordReference}' to EntityReference - {e.Message}", e);
             }
+        }
+
+        public List<Entity> QueryWithPaging(QueryBase query, IOrganizationService service)
+        {
+            var results = new List<Entity>();
+
+            if (query is QueryByAttribute)
+                ((QueryByAttribute)query).PageInfo = new PagingInfo()
+                {
+                    Count = 500,
+                    PageNumber = 1
+                };
+            else if (query is QueryExpression)
+                ((QueryExpression)query).PageInfo = new PagingInfo()
+                {
+                    Count = 500,
+                    PageNumber = 1
+                };
+            else
+                throw new Exception($"Paging for {query.GetType().FullName} is not supported yet!");
+
+            EntityCollection records;
+
+            do
+            {
+                records = service.RetrieveMultiple(query);
+
+                results.AddRange(records.Entities);
+
+                if (query is QueryByAttribute)
+                {
+                    ((QueryByAttribute)query).PageInfo.PageNumber++;
+                    ((QueryByAttribute)query).PageInfo.PagingCookie = records.PagingCookie;
+                }
+                else
+                {
+                    ((QueryExpression)query).PageInfo.PageNumber++;
+                    ((QueryExpression)query).PageInfo.PagingCookie = records.PagingCookie;
+                }
+            } while (records.MoreRecords);
+
+            return results;
         }
 
         #endregion Publics

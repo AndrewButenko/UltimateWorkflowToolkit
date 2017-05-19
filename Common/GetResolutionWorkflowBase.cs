@@ -18,7 +18,7 @@ namespace UltimateWorkflowToolkit.Common
 
         #endregion Abstract Properties
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
             var query = new QueryByAttribute(ResolutionEntityName)
             {

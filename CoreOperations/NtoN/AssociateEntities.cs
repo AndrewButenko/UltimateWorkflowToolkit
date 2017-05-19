@@ -24,7 +24,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
             var record1 = ConvertToEntityReference(Record1Id.Get(executionContext), service);
             var record2 = ConvertToEntityReference(Record2Id.Get(executionContext), service);

@@ -58,7 +58,7 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
             var qualifyLeadRequest = new QualifyLeadRequest()
             {

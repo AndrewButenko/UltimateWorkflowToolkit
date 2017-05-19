@@ -9,15 +9,15 @@ namespace UltimateWorkflowToolkit.CoreOperations
     {
         #region Input/Output Arguments
 
-        [Input("Record Url")]
+        [Input("Record Reference")]
         [RequiredArgument]
-        public InArgument<string> RecordUrl { get; set; }
+        public InArgument<string> Record { get; set; }
 
         #endregion Input/Output Arguments
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service)
+        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
-            var target = ConvertToEntityReference(RecordUrl.Get(executionContext), service);
+            var target = ConvertToEntityReference(Record.Get(executionContext), service);
 
             service.Delete(target.LogicalName, target.Id);
         }
