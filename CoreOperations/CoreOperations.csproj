@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\GetResolutionWorkflowBase.cs" />
     <Compile Include="Incident\IncidentClose.cs" />
     <Compile Include="Common\Delete.cs" />
     <Compile Include="Incident\IncidentGetResolution.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="NtoN\AddMemberToMarketingList.cs" />
     <Compile Include="NtoN\AssociateEntities.cs" />
     <Compile Include="NtoN\DisassociateEntities.cs" />
+    <Compile Include="NtoN\IsRelationshipExists.cs" />
     <Compile Include="NtoN\RemoveMemberFromAllMarketingLists.cs" />
     <Compile Include="NtoN\RemoveMemberFromMarketingList.cs" />
     <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
@@ -112,6 +114,9 @@
     <Compile Include="Quote\QuoteGetProductsFromOpportunity.cs" />
     <Compile Include="Quote\QuoteRevise.cs" />
     <Compile Include="Quote\QuoteWin.cs" />
+    <Compile Include="Relationships\CascadeStatus.cs" />
+    <Compile Include="Relationships\DistributeWorkflow.cs" />
+    <Compile Include="Relationships\RelationshipOperationBase.cs" />
     <Compile Include="SalesOrder\SalesOrderGetResolution.cs" />
     <Compile Include="SalesOrder\SalesOrderClose.cs" />
     <Compile Include="SalesOrder\SalesOrderConvertToInvoice.cs" />
@@ -127,6 +132,9 @@
     <Compile Include="Security\RemoveUserFromTeam.cs" />
     <Compile Include="Security\ShareRecordWithTeam.cs" />
     <Compile Include="Security\ShareRecordWithUser.cs" />
+    <Compile Include="Security\ShareSecuredFieldsBase.cs" />
+    <Compile Include="Security\ShareSecuredFieldsWithTeam.cs" />
+    <Compile Include="Security\ShareSecuredFieldsWithUser.cs" />
     <Compile Include="Security\UnshareRecordWithTeam.cs" />
     <Compile Include="Security\UnshareRecordWithUser.cs" />
   </ItemGroup>
