@@ -22,6 +22,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Quote
         [Input("Requested Delivery Date")]
         public InArgument<DateTime> RequestDeliveryBy { get; set; }
 
+        [Input("Ship To Contact Name")]
+        public InArgument<string> ShipToContactName { get; set; }
+
         #endregion Input Arguments
 
         #region Overriddes
@@ -37,6 +40,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Quote
         {
             record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
             record["requestdeliveryby"] = RequestDeliveryBy.Get(executionContext);
+            record["shipto_contactname"] = ShipToContactName.Get(executionContext);
 
             base.ProcessAdditionalFields(ref record, executionContext);
         }

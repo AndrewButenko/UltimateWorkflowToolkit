@@ -19,6 +19,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.SalesOrder
         [AttributeTarget("salesorderdetail", "shipto_freighttermscode")]
         public InArgument<OptionSetValue> ShipToFreightTerms { get; set; }
 
+        [Input("Ship To Contact Name")]
+        public InArgument<string> ShipToContactName { get; set; }
+
         [Input("Quantity Back Ordered")]
         public InArgument<decimal> QuantityBackOrdered { get; set; }
 
@@ -49,6 +52,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.SalesOrder
         protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
         {
             record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
+            record["shipto_contactname"] = ShipToContactName.Get(executionContext);
             record["quantitybackordered"] = QuantityBackOrdered.Get(executionContext);
             record["quantitycancelled"] = QuantityCancelled.Get(executionContext);
             record["quantityshipped"] = QuantityShipped.Get(executionContext);

@@ -22,6 +22,10 @@ namespace UltimateWorkflowToolkit.CoreOperations.Invoice
         [Default("False")]
         public InArgument<bool> IsCopied { get; set; }
 
+        [Input("Freight Terms")]
+        [AttributeTarget("invoicedetail", "shipto_freighttermscode")]
+        public InArgument<OptionSetValue> ShipToFreightTerms { get; set; }
+
         [Input("Quantity Back Ordered")]
         public InArgument<decimal> QuantityBackOrdered { get; set; }
 
@@ -49,6 +53,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Invoice
         {
             record["actualdeliveryon"] = ActualDeliveryOn.Get(executionContext);
             record["iscopied"] = IsCopied.Get(executionContext);
+            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
             record["quantitybackordered"] = QuantityBackOrdered.Get(executionContext);
             record["quantitycancelled"] = QuantityCancelled.Get(executionContext);
             record["quantityshipped"] = QuantityShipped.Get(executionContext);

@@ -37,9 +37,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
         [Input("Ship To Zip/Postal Code")]
         public InArgument<string> ShipToPostalCode { get; set; }
 
-        [Input("Ship To Contact Name")]
-        public InArgument<string> ShipToContactName { get; set; }
-
         [Input("Ship To Country/Region")]
         public InArgument<string> ShipToCountry { get; set; }
 
@@ -60,7 +57,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
             record["salesrepid"] = SalesRepId.Get(executionContext);
             record["shipto_city"] = ShipToCity.Get(executionContext);
-            record["shipto_contactname"] = ShipToContactName.Get(executionContext);
             record["shipto_country"] = ShipToCountry.Get(executionContext);
             record["shipto_fax"] = ShipToFax.Get(executionContext);
             record["shipto_line1"] = ShipToLine1.Get(executionContext);
