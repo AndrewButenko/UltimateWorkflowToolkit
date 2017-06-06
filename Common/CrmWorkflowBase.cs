@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Activities;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Documents;
+using System.Xml;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata.Query;
@@ -9,6 +11,7 @@ using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
+using System.Text;
 
 namespace UltimateWorkflowToolkit.Common
 {
@@ -91,6 +94,8 @@ namespace UltimateWorkflowToolkit.Common
         public List<Entity> QueryWithPaging(QueryBase query, IOrganizationService service)
         {
             var results = new List<Entity>();
+            var initialFetchXml = string.Empty;
+            var pageNumber = 1;
 
             if (query is QueryByAttribute)
                 ((QueryByAttribute)query).PageInfo = new PagingInfo()
@@ -104,6 +109,12 @@ namespace UltimateWorkflowToolkit.Common
                     Count = 500,
                     PageNumber = 1
                 };
+            else if (query is FetchExpression)
+            {
+                initialFetchXml = ((FetchExpression) query).Query;
+                var fetchXml = CreateFetchXml(initialFetchXml, null, 1, 500);
+                ((FetchExpression) query).Query = fetchXml;
+            }
             else
                 throw new Exception($"Paging for {query.GetType().FullName} is not supported yet!");
 
@@ -120,10 +131,16 @@ namespace UltimateWorkflowToolkit.Common
                     ((QueryByAttribute)query).PageInfo.PageNumber++;
                     ((QueryByAttribute)query).PageInfo.PagingCookie = records.PagingCookie;
                 }
+                else if (query is QueryExpression)
+                {
+                    ((QueryExpression) query).PageInfo.PageNumber++;
+                    ((QueryExpression) query).PageInfo.PagingCookie = records.PagingCookie;
+                }
                 else
                 {
-                    ((QueryExpression)query).PageInfo.PageNumber++;
-                    ((QueryExpression)query).PageInfo.PagingCookie = records.PagingCookie;
+                    pageNumber++;
+                    var fetchXml = CreateFetchXml(initialFetchXml, records.PagingCookie, pageNumber, 500);
+                    ((FetchExpression)query).Query = fetchXml;
                 }
             } while (records.MoreRecords);
 
@@ -186,6 +203,31 @@ namespace UltimateWorkflowToolkit.Common
             }
 
             return null;
+        }
+
+        private string CreateFetchXml(string initialFetchXml, string pagingCookie, int pageNumber, int fetchCount)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(initialFetchXml);
+
+            var attrs = doc.DocumentElement.Attributes;
+
+            if (!string.IsNullOrEmpty(pagingCookie))
+            {
+                XmlAttribute pagingAttr = doc.CreateAttribute("paging-cookie");
+                pagingAttr.Value = pagingCookie;
+                attrs.Append(pagingAttr);
+            }
+
+            var pageAttr = doc.CreateAttribute("page");
+            pageAttr.Value = Convert.ToString(pageNumber);
+            attrs.Append(pageAttr);
+
+            var countAttr = doc.CreateAttribute("count");
+            countAttr.Value = System.Convert.ToString(fetchCount);
+            attrs.Append(countAttr);
+
+            return doc.OuterXml;
         }
 
         #endregion Privates

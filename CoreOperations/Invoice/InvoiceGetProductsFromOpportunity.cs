@@ -1,12 +1,11 @@
 ﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using UltimateWorkflowToolkit.Common;
+using UltimateWorkflowToolkit.CoreOperations.Base;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class InvoiceGetProductsFromOpportunity : CrmWorkflowBase
+    public class InvoiceGetProductsFromOpportunity : CopyDetailsWorkflowsBase
     {
 
         #region Input/Output Parameters
@@ -23,15 +22,24 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
-        {
-            var getInvoiceProductsFromOpportunityRequest = new GetInvoiceProductsFromOpportunityRequest()
-            {
-                InvoiceId = Invoice.Get(executionContext).Id,
-                OpportunityId = Opportunity.Get(executionContext).Id
-            };
+        #region Overriddes
 
-            service.Execute(getInvoiceProductsFromOpportunityRequest);
+        protected override EntityReference GetSourceEntityParent(CodeActivityContext executionContext)
+        {
+            return Opportunity.Get(executionContext);
         }
+
+        protected override EntityReference GetTargetEntityParent(CodeActivityContext executionContext)
+        {
+            return Invoice.Get(executionContext);
+        }
+
+        protected override string SourceEntity => "opportunityproduct";
+        protected override string SourceEntityLookupFieldName => "opportunityid";
+        protected override string TargetEntity => "invoicedetail";
+        protected override string TargetEntityLookupFieldName => "invoiceid";
+
+        #endregion Overriddes
+
     }
 }

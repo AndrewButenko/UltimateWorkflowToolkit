@@ -4,8 +4,9 @@ using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using UltimateWorkflowToolkit.Common;
 
-namespace UltimateWorkflowToolkit.Common
+namespace UltimateWorkflowToolkit.CoreOperations.Base
 {
     public abstract class GetResolutionWorkflowBase : CrmWorkflowBase
     {

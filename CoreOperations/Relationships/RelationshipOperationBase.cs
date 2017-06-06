@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Activities;
-using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;

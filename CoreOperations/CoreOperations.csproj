@@ -82,10 +82,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\GetResolutionWorkflowBase.cs" />
+    <Compile Include="Base\AddDetailWorkflowBase.cs" />
+    <Compile Include="Base\AddDetailWorkflowExtensionBase.cs" />
+    <Compile Include="Base\CopyDetailsWorkflowsBase.cs" />
+    <Compile Include="Base\GetResolutionWorkflowBase.cs" />
     <Compile Include="Incident\IncidentClose.cs" />
     <Compile Include="Common\Delete.cs" />
     <Compile Include="Incident\IncidentGetResolution.cs" />
+    <Compile Include="Invoice\InvoiceAddDetail.cs" />
     <Compile Include="Invoice\InvoiceGetProductsFromOpportunity.cs" />
     <Compile Include="Invoice\InvoiceLockPricing.cs" />
     <Compile Include="Invoice\InvoiceUnlockPricing.cs" />
@@ -95,6 +99,7 @@
     <Compile Include="NtoN\IsRelationshipExists.cs" />
     <Compile Include="NtoN\RemoveMemberFromAllMarketingLists.cs" />
     <Compile Include="NtoN\RemoveMemberFromMarketingList.cs" />
+    <Compile Include="Opportunity\OpportunityAddDetail.cs" />
     <Compile Include="Opportunity\OpportunityGenerateInvoice.cs" />
     <Compile Include="Opportunity\OpportunityGenerateQuote.cs" />
     <Compile Include="Opportunity\OpportunityGenerateSalesOrder.cs" />
@@ -108,6 +113,7 @@
     </Compile>
     <Compile Include="Lead\LeadQualify.cs" />
     <Compile Include="Opportunity\OpportunityWin.cs" />
+    <Compile Include="Quote\QuoteAddDetail.cs" />
     <Compile Include="Quote\QuoteGetResolution.cs" />
     <Compile Include="Quote\QuoteClose.cs" />
     <Compile Include="Quote\QuoteConvertToSalesOrder.cs" />
@@ -117,6 +123,7 @@
     <Compile Include="Relationships\CascadeStatus.cs" />
     <Compile Include="Relationships\DistributeWorkflow.cs" />
     <Compile Include="Relationships\RelationshipOperationBase.cs" />
+    <Compile Include="SalesOrder\SalesOrderAddDetail.cs" />
     <Compile Include="SalesOrder\SalesOrderGetResolution.cs" />
     <Compile Include="SalesOrder\SalesOrderClose.cs" />
     <Compile Include="SalesOrder\SalesOrderConvertToInvoice.cs" />
