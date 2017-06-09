@@ -1,13 +1,11 @@
 ﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
-using UltimateWorkflowToolkit.Common;
+using UltimateWorkflowToolkit.CoreOperations.Base;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateInvoice : CrmWorkflowBase
+    public class OpportunityGenerateInvoice : CreateChildFromParentWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -22,18 +20,24 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        #region Overriddes
+
+        protected override EntityReference GetSourceEntity(CodeActivityContext executionContext)
         {
-            var generateInvoiceFromOpportunityRequest = new GenerateInvoiceFromOpportunityRequest
-            {
-                OpportunityId = Opportunity.Get(executionContext).Id,
-                ColumnSet = new ColumnSet("invoiceid")
-            };
-
-            var generateInvoiceFromOpportunityResponse =
-                (GenerateInvoiceFromOpportunityResponse)service.Execute(generateInvoiceFromOpportunityRequest);
-
-            Invoice.Set(executionContext, generateInvoiceFromOpportunityResponse.Entity.ToEntityReference());
+            return Opportunity.Get(executionContext);
         }
+
+        protected override void SetTargetEntity(CodeActivityContext executionContext, EntityReference target)
+        {
+            Invoice.Set(executionContext, target);
+        }
+
+        protected override string SourceEntityChild => "opportunityproduct";
+        protected override string SourceEntityLookupFieldName => "opportunityid";
+        protected override string TargetEntity => "invoice";
+        protected override string TargetEntityChild => "invoicedetail";
+        protected override string TargetEntityLookupFieldName => "invoiceid";
+
+        #endregion Overriddes
     }
 }

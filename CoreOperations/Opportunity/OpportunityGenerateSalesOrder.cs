@@ -1,13 +1,11 @@
 ﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Query;
-using UltimateWorkflowToolkit.Common;
+using UltimateWorkflowToolkit.CoreOperations.Base;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateSalesOrder : CrmWorkflowBase
+    public class OpportunityGenerateSalesOrder : CreateChildFromParentWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -22,18 +20,25 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        #region Overriddes
+
+        protected override EntityReference GetSourceEntity(CodeActivityContext executionContext)
         {
-            var generateSalesOrderFromOpportunityRequest = new GenerateSalesOrderFromOpportunityRequest
-            {
-                OpportunityId = Opportunity.Get(executionContext).Id,
-                ColumnSet = new ColumnSet("salesorderid")
-            };
-
-            var generateSalesOrderFromOpportunityResponse =
-                (GenerateSalesOrderFromOpportunityResponse)service.Execute(generateSalesOrderFromOpportunityRequest);
-
-            SalesOrder.Set(executionContext, generateSalesOrderFromOpportunityResponse.Entity.ToEntityReference());
+            return Opportunity.Get(executionContext);
         }
+
+        protected override void SetTargetEntity(CodeActivityContext executionContext, EntityReference target)
+        {
+            SalesOrder.Set(executionContext, target);
+        }
+
+        protected override string SourceEntityChild => "opportunityproduct";
+        protected override string SourceEntityLookupFieldName => "opportunityid";
+        protected override string TargetEntity => "salesorder";
+        protected override string TargetEntityChild => "salesorderdetail";
+        protected override string TargetEntityLookupFieldName => "salesorderid";
+
+        #endregion Overriddes
+
     }
 }

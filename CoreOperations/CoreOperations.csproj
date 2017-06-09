@@ -85,6 +85,7 @@
     <Compile Include="Base\AddDetailWorkflowBase.cs" />
     <Compile Include="Base\AddDetailWorkflowExtensionBase.cs" />
     <Compile Include="Base\CopyDetailsWorkflowsBase.cs" />
+    <Compile Include="Base\CreateChildFromParentWorkflowBase.cs" />
     <Compile Include="Base\GetResolutionWorkflowBase.cs" />
     <Compile Include="Incident\IncidentClose.cs" />
     <Compile Include="Common\Delete.cs" />

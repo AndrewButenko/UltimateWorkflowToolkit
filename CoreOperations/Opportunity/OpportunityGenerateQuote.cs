@@ -3,11 +3,11 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
-using UltimateWorkflowToolkit.Common;
+using UltimateWorkflowToolkit.CoreOperations.Base;
 
 namespace UltimateWorkflowToolkit.CoreOperations
 {
-    public class OpportunityGenerateQuote : CrmWorkflowBase
+    public class OpportunityGenerateQuote : CreateChildFromParentWorkflowBase
     {
         #region Input/Output Parameters
 
@@ -22,18 +22,25 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        #region Overriddes
+
+        protected override EntityReference GetSourceEntity(CodeActivityContext executionContext)
         {
-            var generateQuoteFromOpportunityRequest = new GenerateQuoteFromOpportunityRequest
-            {
-                OpportunityId = Opportunity.Get(executionContext).Id,
-                ColumnSet = new ColumnSet("quoteid")
-            };
-
-            var generateQuoteFromOpportunityResponse =
-                (GenerateQuoteFromOpportunityResponse)service.Execute(generateQuoteFromOpportunityRequest);
-
-            Quote.Set(executionContext, generateQuoteFromOpportunityResponse.Entity.ToEntityReference());
+            return Opportunity.Get(executionContext);
         }
+
+        protected override void SetTargetEntity(CodeActivityContext executionContext, EntityReference target)
+        {
+            Quote.Set(executionContext, target);
+        }
+
+        protected override string SourceEntityChild => "opportunityproduct";
+        protected override string SourceEntityLookupFieldName => "opportunityid";
+        protected override string TargetEntity => "quote";
+        protected override string TargetEntityChild => "quotedetail";
+        protected override string TargetEntityLookupFieldName => "quoteid";
+
+        #endregion Overriddes
+
     }
 }
