@@ -87,6 +87,12 @@
     <Compile Include="Base\CopyDetailsWorkflowsBase.cs" />
     <Compile Include="Base\CreateChildFromParentWorkflowBase.cs" />
     <Compile Include="Base\GetResolutionWorkflowBase.cs" />
+    <Compile Include="Email\AttachNotesToEmailAndSend.cs" />
+    <Compile Include="Email\AttachToRecordFromEmail.cs" />
+    <Compile Include="Email\CreateEmailFromTemplate.cs" />
+    <Compile Include="Email\SendEmail.cs" />
+    <Compile Include="Email\SendEmailToTeam.cs" />
+    <Compile Include="Email\SendEmailToUnresolvedRecipient.cs" />
     <Compile Include="Incident\IncidentClose.cs" />
     <Compile Include="Common\Delete.cs" />
     <Compile Include="Incident\IncidentGetResolution.cs" />
