@@ -151,6 +151,9 @@
     <Compile Include="Security\ShareSecuredFieldsWithUser.cs" />
     <Compile Include="Security\UnshareRecordWithTeam.cs" />
     <Compile Include="Security\UnshareRecordWithUser.cs" />
+    <Compile Include="System\CancelOtherInstances.cs" />
+    <Compile Include="System\RecalculateRollup.cs" />
+    <Compile Include="System\RefreshCurrencyExchangeRates.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildScript\Build.ps1" />

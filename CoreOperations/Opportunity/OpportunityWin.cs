@@ -39,7 +39,6 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
         {
-
             var opportunityClose = new Entity("opportunityclose")
             {
                 ["subject"] = Subject.Get(executionContext),
