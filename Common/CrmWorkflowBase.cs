@@ -1,17 +1,14 @@
 ﻿using System;
+using System.Xml;
+using System.Linq;
 using System.Activities;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows.Documents;
-using System.Xml;
+using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
-using System.Text;
 
 namespace UltimateWorkflowToolkit.Common
 {
@@ -47,6 +44,18 @@ namespace UltimateWorkflowToolkit.Common
             var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
             var service = serviceFactory.CreateOrganizationService(context.UserId);
             var systemService = serviceFactory.CreateOrganizationService(null);
+            var tracingService = executionContext.GetExtension<ITracingService>();
+
+            #region Log All Inputs
+
+            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            properties.ToList().ForEach(p =>
+            {
+                tracingService.Trace(p.PropertyType.FullName);
+            });
+
+            #endregion Log All Inputs
 
             //ToDo: Include validation of InArguments that are marked as required
 
