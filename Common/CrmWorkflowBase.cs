@@ -3,6 +3,8 @@ using System.Xml;
 using System.Linq;
 using System.Activities;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Reflection;
 using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -48,12 +50,44 @@ namespace UltimateWorkflowToolkit.Common
 
             #region Log All Inputs
 
-            var properties = GetType().GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+var properties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-            properties.ToList().ForEach(p =>
-            {
-                tracingService.Trace(p.PropertyType.FullName);
-            });
+properties.ToList().ForEach(p =>
+{
+    if (p.PropertyType.IsSubclassOf(typeof(InArgument)) ||
+        p.PropertyType.IsSubclassOf(typeof(InOutArgument)))
+    {
+
+        var propertyLabel = ((InputAttribute) p.GetCustomAttribute(typeof(InputAttribute))).Name;
+
+        var logText = $"Value of '{propertyLabel}' attribute equals to ";
+
+        var property = (Argument) p.GetValue(this);
+        var propertyValue = property.Get(executionContext);
+
+        if (propertyValue == null)
+            logText += "empty";
+        else if (propertyValue is string ||
+                    propertyValue is decimal ||
+                    propertyValue is int ||
+                    propertyValue is bool)
+            logText += propertyValue.ToString();
+        else if (propertyValue is DateTime)
+            logText += ((DateTime) propertyValue).ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz");
+        else if (propertyValue is EntityReference)
+        {
+            var er = (EntityReference) propertyValue;
+            logText += $"Id: {er.Id}, LogicalName: {er.LogicalName}";
+        }
+        else if (propertyValue is OptionSetValue)
+            logText += ((OptionSetValue) propertyValue).Value;
+        else if (propertyValue is Money)
+            logText += ((Money) propertyValue).Value.ToString(CultureInfo.InvariantCulture);
+        else logText += $"undefined type - {p.GetType().FullName}";
+
+        tracingService.Trace(logText);
+    }
+});
 
             #endregion Log All Inputs
 
@@ -216,14 +250,14 @@ namespace UltimateWorkflowToolkit.Common
 
         private string CreateFetchXml(string initialFetchXml, string pagingCookie, int pageNumber, int fetchCount)
         {
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             doc.LoadXml(initialFetchXml);
 
             var attrs = doc.DocumentElement.Attributes;
 
             if (!string.IsNullOrEmpty(pagingCookie))
             {
-                XmlAttribute pagingAttr = doc.CreateAttribute("paging-cookie");
+                var pagingAttr = doc.CreateAttribute("paging-cookie");
                 pagingAttr.Value = pagingCookie;
                 attrs.Append(pagingAttr);
             }
@@ -233,7 +267,7 @@ namespace UltimateWorkflowToolkit.Common
             attrs.Append(pageAttr);
 
             var countAttr = doc.CreateAttribute("count");
-            countAttr.Value = System.Convert.ToString(fetchCount);
+            countAttr.Value = Convert.ToString(fetchCount);
             attrs.Append(countAttr);
 
             return doc.OuterXml;
