@@ -152,6 +152,7 @@
     <Compile Include="Security\UnshareRecordWithTeam.cs" />
     <Compile Include="Security\UnshareRecordWithUser.cs" />
     <Compile Include="System\CancelOtherInstances.cs" />
+    <Compile Include="System\RecalculateAllRollups.cs" />
     <Compile Include="System\RecalculateRollup.cs" />
     <Compile Include="System\RefreshCurrencyExchangeRates.cs" />
     <Compile Include="Base\ViewOperationWorkflowBase.cs" />
