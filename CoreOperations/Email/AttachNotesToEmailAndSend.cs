@@ -22,10 +22,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #region Overriddes 
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service,
-            IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var sourceRecord = ConvertToEntityReference(Record.Get(executionContext), sysService);
+            var sourceRecord = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
             var notesQuery = new QueryByAttribute("annotation")
             {
@@ -34,23 +33,23 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
             notesQuery.AddAttributeValue("isdocument", true);
             notesQuery.AddAttributeValue("objectid", sourceRecord.Id);
 
-            var notes = QueryWithPaging(notesQuery, service);
+            var notes = QueryWithPaging(notesQuery);
 
             notes.ForEach(note =>
             {
                 var activityattachment = new Entity("activitymimeattachment")
                 {
-                    ["objectid"] = Email.Get(executionContext),
+                    ["objectid"] = Email.Get(Context.ExecutionContext),
                     ["objecttypecode"] = "email",
                     ["body"] = note["documentbody"],
                     ["filename"] = note["filename"]
                 };
 
-                service.Create(activityattachment);
+                Context.UserService.Create(activityattachment);
             });
 
-            if (SendAfterOperation.Get(executionContext))
-                base.ExecuteWorkflowLogic(executionContext, context, service, sysService);
+            if (SendAfterOperation.Get(Context.ExecutionContext))
+                base.ExecuteWorkflowLogic();
         }
 
         #endregion Overriddes 

@@ -23,13 +23,12 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            sysService.Execute(new AddMembersTeamRequest()
+            Context.SystemService.Execute(new AddMembersTeamRequest()
             {
-                MemberIds = new[] { User.Get(executionContext).Id },
-                TeamId = Team.Get(executionContext).Id
+                MemberIds = new[] { User.Get(Context.ExecutionContext).Id },
+                TeamId = Team.Get(Context.ExecutionContext).Id
             });
         }
     }

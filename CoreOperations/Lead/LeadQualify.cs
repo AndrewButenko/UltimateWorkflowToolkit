@@ -58,41 +58,41 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var qualifyLeadRequest = new QualifyLeadRequest()
             {
-                CreateAccount = IsCreateAccont.Get(executionContext),
-                CreateContact = IsCreateContact.Get(executionContext),
-                CreateOpportunity = IsCreateOpportunity.Get(executionContext),
-                LeadId = Lead.Get(executionContext),
-                Status = LeadStatus.Get(executionContext),
-                OpportunityCurrencyId = Currency.Get(executionContext)
+                CreateAccount = IsCreateAccont.Get(Context.ExecutionContext),
+                CreateContact = IsCreateContact.Get(Context.ExecutionContext),
+                CreateOpportunity = IsCreateOpportunity.Get(Context.ExecutionContext),
+                LeadId = Lead.Get(Context.ExecutionContext),
+                Status = LeadStatus.Get(Context.ExecutionContext),
+                OpportunityCurrencyId = Currency.Get(Context.ExecutionContext)
             };
 
-            if (OpportunityCustomerAccount.Get(executionContext) != null)
+            if (OpportunityCustomerAccount.Get(Context.ExecutionContext) != null)
             {
-                qualifyLeadRequest.OpportunityCustomerId = OpportunityCustomerAccount.Get(executionContext);
+                qualifyLeadRequest.OpportunityCustomerId = OpportunityCustomerAccount.Get(Context.ExecutionContext);
             }
-            else if (OpportunityCustomerContact.Get(executionContext) != null)
+            else if (OpportunityCustomerContact.Get(Context.ExecutionContext) != null)
             {
-                qualifyLeadRequest.OpportunityCustomerId = OpportunityCustomerContact.Get(executionContext);
+                qualifyLeadRequest.OpportunityCustomerId = OpportunityCustomerContact.Get(Context.ExecutionContext);
             }
 
-            var qualifyLeadResponse = (QualifyLeadResponse)service.Execute(qualifyLeadRequest);
+            var qualifyLeadResponse = (QualifyLeadResponse)Context.UserService.Execute(qualifyLeadRequest);
 
             foreach (var createdEntity in qualifyLeadResponse.CreatedEntities)
             {
                 switch (createdEntity.LogicalName)
                 {
                     case "account":
-                        Account.Set(executionContext, createdEntity);
+                        Account.Set(Context.ExecutionContext, createdEntity);
                         break;
                     case "contact":
-                        Contact.Set(executionContext, createdEntity);
+                        Contact.Set(Context.ExecutionContext, createdEntity);
                         break;
                     case "opportunity":
-                        Opportunity.Set(executionContext, createdEntity);
+                        Opportunity.Set(Context.ExecutionContext, createdEntity);
                         break;
                 }
             }

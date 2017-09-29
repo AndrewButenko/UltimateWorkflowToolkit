@@ -12,9 +12,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            Entity asyncOperation = sysService.Retrieve("asyncoperation", context.OperationId, new ColumnSet("workflowactivationid"));
+            Entity asyncOperation = Context.SystemService.Retrieve("asyncoperation", Context.WorkflowExecutionContext.OperationId, new ColumnSet("workflowactivationid"));
 
             var asyncOperationsQuery = new QueryExpression("asyncoperation")
             {
@@ -24,9 +24,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
             asyncOperationsQuery.Criteria.AddCondition("workflowactivationid", ConditionOperator.Equal,
                 asyncOperation.GetAttributeValue<EntityReference>("workflowactivationid").Id);
             asyncOperationsQuery.Criteria.AddCondition("statecode", ConditionOperator.Equal, 1);
-            asyncOperationsQuery.Criteria.AddCondition("regardingobjectid", ConditionOperator.Equal, context.PrimaryEntityId);
+            asyncOperationsQuery.Criteria.AddCondition("regardingobjectid", ConditionOperator.Equal, Context.WorkflowExecutionContext.PrimaryEntityId);
 
-            var existingInstances = sysService.RetrieveMultiple(asyncOperationsQuery).Entities.ToList();
+            var existingInstances = Context.SystemService.RetrieveMultiple(asyncOperationsQuery).Entities.ToList();
 
 
             foreach (Entity existingInstance in existingInstances)
@@ -34,7 +34,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
                 existingInstance["statecode"] = new OptionSetValue(3);
                 existingInstance["statuscode"] = new OptionSetValue(32);
 
-                sysService.Update(existingInstance);
+                Context.SystemService.Update(existingInstance);
             }
         }
 

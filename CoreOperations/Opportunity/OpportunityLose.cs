@@ -41,25 +41,25 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var opportunityClose = new Entity("opportunityclose")
             {
-                ["subject"] = Subject.Get(executionContext),
-                ["opportunityid"] = Opportunity.Get(executionContext),
-                ["actualrevenue"] = ActualRevenue.Get(executionContext),
-                ["actualend"] = CloseDate.Get(executionContext),
-                ["competitorid"] = Competitor.Get(executionContext),
-                ["description"] = Description.Get(executionContext)
+                ["subject"] = Subject.Get(Context.ExecutionContext),
+                ["opportunityid"] = Opportunity.Get(Context.ExecutionContext),
+                ["actualrevenue"] = ActualRevenue.Get(Context.ExecutionContext),
+                ["actualend"] = CloseDate.Get(Context.ExecutionContext),
+                ["competitorid"] = Competitor.Get(Context.ExecutionContext),
+                ["description"] = Description.Get(Context.ExecutionContext)
             };
 
             var loseOpportunityRequest = new LoseOpportunityRequest()
             {
-                Status = OpportunityStatus.Get(executionContext),
+                Status = OpportunityStatus.Get(Context.ExecutionContext),
                 OpportunityClose = opportunityClose
             };
 
-            service.Execute(loseOpportunityRequest);
+            Context.UserService.Execute(loseOpportunityRequest);
         }
     }
 }

@@ -25,11 +25,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var target = ConvertToEntityReference(Record.Get(executionContext), service);
+            var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            var retrieveEntityResponse = (RetrieveEntityResponse)sysService.Execute(new RetrieveEntityRequest()
+            var retrieveEntityResponse = (RetrieveEntityResponse)Context.SystemService.Execute(new RetrieveEntityRequest()
             {
                 EntityFilters = Microsoft.Xrm.Sdk.Metadata.EntityFilters.Attributes,
                 LogicalName = target.LogicalName,
@@ -39,7 +39,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
             var entityMetadata = retrieveEntityResponse.EntityMetadata;
 
             entityMetadata.Attributes.Where(a => a.SourceType == 2 && (a.GetType() != typeof(MoneyAttributeMetadata) || (a.GetType() == typeof(MoneyAttributeMetadata) && ((MoneyAttributeMetadata)a).CalculationOf == null))).Select(a => a.LogicalName).ToList().ForEach(fieldName => {
-                sysService.Execute(new CalculateRollupFieldRequest()
+                Context.SystemService.Execute(new CalculateRollupFieldRequest()
                 {
                     FieldName = fieldName,
                     Target = target

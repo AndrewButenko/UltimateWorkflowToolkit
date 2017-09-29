@@ -19,13 +19,13 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #endregion Input Parameters
 
-        public override void PerformRelationshipOperation(CodeActivityContext executionContext, IOrganizationService service, Entity childRecord)
+        public override void PerformRelationshipOperation(Entity childRecord)
         {
-            service.Execute(new SetStateRequest()
+            Context.UserService.Execute(new SetStateRequest()
             {
                 EntityMoniker = childRecord.ToEntityReference(),
-                State = new OptionSetValue(StateCode.Get(executionContext)),
-                Status = new OptionSetValue(StatusCode.Get(executionContext))
+                State = new OptionSetValue(StateCode.Get(Context.ExecutionContext)),
+                Status = new OptionSetValue(StatusCode.Get(Context.ExecutionContext))
             });
         }
     }

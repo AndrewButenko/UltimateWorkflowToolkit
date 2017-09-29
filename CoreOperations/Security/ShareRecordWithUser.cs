@@ -56,58 +56,57 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var target = ConvertToEntityReference(Record.Get(executionContext), service);
+            var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
             #region Build Sharing Mask
 
             var rights = AccessRights.None;
 
-            if (ReadAccess.Get(executionContext))
+            if (ReadAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.ReadAccess;
             }
 
-            if (WriteAccess.Get(executionContext))
+            if (WriteAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.WriteAccess;
             }
 
-            if (DeleteAccess.Get(executionContext))
+            if (DeleteAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.DeleteAccess;
             }
 
-            if (AppendAccess.Get(executionContext))
+            if (AppendAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.AppendAccess ;
             }
 
-            if (AppendToAccess.Get(executionContext))
+            if (AppendToAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.AppendToAccess;
             }
 
-            if (AssignAccess.Get(executionContext))
+            if (AssignAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.AssignAccess;
             }
 
-            if (ShareAccess.Get(executionContext))
+            if (ShareAccess.Get(Context.ExecutionContext))
             {
                 rights |= AccessRights.ShareAccess;
             }
 
             #endregion Build Sharing Mask
 
-            sysService.Execute(new ModifyAccessRequest()
+            Context.SystemService.Execute(new ModifyAccessRequest()
             {
                 PrincipalAccess = new PrincipalAccess()
                 {
                     AccessMask = rights,
-                    Principal = User.Get(executionContext)
+                    Principal = User.Get(Context.ExecutionContext)
                 },
                 Target = target
             });

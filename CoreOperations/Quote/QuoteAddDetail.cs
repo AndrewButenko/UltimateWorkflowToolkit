@@ -31,18 +31,15 @@ namespace UltimateWorkflowToolkit.CoreOperations.Quote
 
         protected override string ProductEntityName => "quotedetail";
         protected override string ParentEntityLookupFieldName => "quoteid";
-        protected override EntityReference GetParentEntity(CodeActivityContext executionContext)
-        {
-            return Quote.Get(executionContext);
-        }
+        protected override EntityReference ParentEntity => Quote.Get(Context.ExecutionContext);
 
-        protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
+        protected override void ProcessAdditionalFields(ref Entity record)
         {
-            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
-            record["requestdeliveryby"] = RequestDeliveryBy.Get(executionContext);
-            record["shipto_contactname"] = ShipToContactName.Get(executionContext);
+            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(Context.ExecutionContext);
+            record["requestdeliveryby"] = RequestDeliveryBy.Get(Context.ExecutionContext);
+            record["shipto_contactname"] = ShipToContactName.Get(Context.ExecutionContext);
 
-            base.ProcessAdditionalFields(ref record, executionContext);
+            base.ProcessAdditionalFields(ref record);
         }
 
         #endregion Overriddes

@@ -12,14 +12,14 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
     {
         #region Abstract Properties
 
-        protected abstract Guid GetParentRecordId(CodeActivityContext executionContext);
+        protected abstract Guid ParentRecordId { get; }
         protected abstract string ResolutionEntityName { get; }
         protected abstract string ParentRecordLookupFieldName { get; }
-        protected abstract void SetResolutionEntity(CodeActivityContext executionContext, EntityReference resolution);
+        protected abstract void SetResolutionEntity(EntityReference resolution);
 
         #endregion Abstract Properties
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var query = new QueryByAttribute(ResolutionEntityName)
             {
@@ -30,12 +30,12 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
                     PageNumber = 1
                 }
             };
-            query.AddAttributeValue(ParentRecordLookupFieldName, GetParentRecordId(executionContext));
+            query.AddAttributeValue(ParentRecordLookupFieldName, ParentRecordId);
             query.AddAttributeValue("statecode", 1);
 
-            var resolutionEntity = service.RetrieveMultiple(query).Entities.FirstOrDefault();
+            var resolutionEntity = Context.SystemService.RetrieveMultiple(query).Entities.FirstOrDefault();
 
-            SetResolutionEntity(executionContext, resolutionEntity?.ToEntityReference());
+            SetResolutionEntity(resolutionEntity?.ToEntityReference());
         }
     }
 

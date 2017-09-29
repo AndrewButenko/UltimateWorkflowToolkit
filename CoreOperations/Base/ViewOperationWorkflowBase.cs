@@ -26,17 +26,17 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #region Abstracts
 
-        protected abstract void ProcessRecords(List<Entity> records, CodeActivityContext executionContext, IOrganizationService service, IOrganizationService sysService);
+        protected abstract void ProcessRecords(List<Entity> records);
 
         #endregion Abstracts
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var publicView = PublicView.Get(executionContext);
-            var privateView = PrivateView.Get(executionContext);
-            var fetchXml = FetchXmlQuery.Get(executionContext);
+            var publicView = PublicView.Get(Context.ExecutionContext);
+            var privateView = PrivateView.Get(Context.ExecutionContext);
+            var fetchXml = FetchXmlQuery.Get(Context.ExecutionContext);
 
             if (publicView == null &&
                 privateView == null &&
@@ -45,16 +45,16 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
             if (publicView != null)
             {
-                fetchXml = sysService.Retrieve(publicView.LogicalName, publicView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
+                fetchXml = Context.SystemService.Retrieve(publicView.LogicalName, publicView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
             }
             else if (privateView != null)
             {
-                fetchXml = sysService.Retrieve(privateView.LogicalName, privateView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
+                fetchXml = Context.SystemService.Retrieve(privateView.LogicalName, privateView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
             }
 
-            var allRecords = QueryWithPaging(new FetchExpression(fetchXml), sysService);
+            var allRecords = QueryWithPaging(new FetchExpression(fetchXml));
 
-            ProcessRecords(allRecords, executionContext, service, sysService);
+            ProcessRecords(allRecords);
         }
 
         #endregion Overriddes

@@ -36,17 +36,16 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #region Abstract Methods
 
-        public abstract EntityReference GetPrincipal(CodeActivityContext executionContext);
+        public abstract EntityReference Principal { get; }
 
         #endregion Abstract Methods
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var target = ConvertToEntityReference(Record.Get(executionContext), service);
-            var principal = GetPrincipal(executionContext);
-            var readAccess = ReadAccess.Get(executionContext);
-            var writeAccess = WriteAccess.Get(executionContext);
+            var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
+            var principal = Principal;
+            var readAccess = ReadAccess.Get(Context.ExecutionContext);
+            var writeAccess = WriteAccess.Get(Context.ExecutionContext);
 
             //Let's retrieve attributes first
             var retrieveEntityRequest = new RetrieveEntityRequest()
@@ -56,9 +55,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
                 RetrieveAsIfPublished = true
             };
 
-            var retrieveEntityResponse = (RetrieveEntityResponse) sysService.Execute(retrieveEntityRequest);
+            var retrieveEntityResponse = (RetrieveEntityResponse) Context.SystemService.Execute(retrieveEntityRequest);
 
-            var fields = Fields.Get(executionContext).ToLowerInvariant().Split(',').ToArray();
+            var fields = Fields.Get(Context.ExecutionContext).ToLowerInvariant().Split(',').ToArray();
 
             foreach (var field in fields)
             {
@@ -79,7 +78,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
                 queryPOAA.AddAttributeValue("objectid", target.Id);
                 queryPOAA.AddAttributeValue("principalid", principal.Id);
 
-                var poaa = sysService.RetrieveMultiple(queryPOAA).Entities.FirstOrDefault();
+                var poaa = Context.SystemService.RetrieveMultiple(queryPOAA).Entities.FirstOrDefault();
 
                 if (poaa != null)
                 {
@@ -87,10 +86,10 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
                     {
                         poaa["readaccess"] = readAccess;
                         poaa["updateaccess"] = writeAccess;
-                        sysService.Update(poaa);
+                        Context.SystemService.Update(poaa);
                     }
                     else
-                        sysService.Delete("principalobjectattributeaccess", poaa.Id);
+                        Context.SystemService.Delete("principalobjectattributeaccess", poaa.Id);
                 }
                 else if (readAccess || writeAccess)
                 {
@@ -103,7 +102,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
                         ["principalid"] = principal
                     };
 
-                    sysService.Create(poaa);
+                    Context.SystemService.Create(poaa);
                 }
             }
         }

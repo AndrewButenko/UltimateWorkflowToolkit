@@ -9,31 +9,79 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Xrm.Sdk.Query;
 using UltimateWorkflowToolkit.Common;
+using Newtonsoft.Json.Linq;
 
 namespace UltimateWorkflowToolkit.CoreOperations.System
 {
 
-    #region Overriddes
 
     public class RefreshCurrencyExchangeRates : CrmWorkflowBase
     {
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        #region Input/Output Arguments
+
+        [Input("Currency Layer Access Key")]
+        [RequiredArgument]
+        public InArgument<string> AcccessKey { get; set; }
+
+        #endregion Input/Output Arguments
+
+        #region Overriddes
+
+        protected override void ExecuteWorkflowLogic()
         {
+            #region Get All Currencies From Endpoint and check that call was successfull
+
+            string jsonResult = null;
+
+            string url = "http://apilayer.net/api/live?access_key=" + AcccessKey.Get(Context.ExecutionContext);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            using (StreamReader resStream = new StreamReader(request.GetResponse().GetResponseStream()))
+            {
+                jsonResult = resStream.ReadToEnd();
+            }
+
+            var jobject = JObject.Parse(jsonResult);
+
+            var success = jobject.SelectToken("$.success").Value<bool>();
+
+            if (!success)
+            {
+                var errorToken = jobject.SelectToken("$.error");
+                var errorMessage = $@"Can't obtain currency exchange rates:
+Code: {errorToken.SelectToken("code").Value<int>()}
+Type: {errorToken.SelectToken("type").Value<string>()}
+Info: {errorToken.SelectToken("info").Value<string>()}";
+
+                throw new InvalidPluginExecutionException(errorMessage);
+            }
+
+            #endregion Get All Currencies From Endpoint and check that call was successfull
+
             #region Get Base Currency
 
             QueryExpression query = new QueryExpression("transactioncurrency")
             {
-                ColumnSet = new ColumnSet("isocurrencycode")
+                ColumnSet = new ColumnSet("isocurrencycode", "currencyname")
             };
             query.AddLink("organization", "transactioncurrencyid", "basecurrencyid", JoinOperator.Inner);
 
-            Entity BaseCurrency = service.RetrieveMultiple(query).Entities.FirstOrDefault();
+            Entity BaseCurrency = Context.SystemService.RetrieveMultiple(query).Entities.FirstOrDefault();
 
             if (BaseCurrency == null)
                 return;
 
             var BaseCurrencyCode = BaseCurrency.GetAttributeValue<string>("isocurrencycode").ToUpper();
             var BaseCurrencyId = BaseCurrency.Id;
+            var BaseCurrencyName = BaseCurrency.GetAttributeValue<string>("currencyname");
+
+            var BaseCurrencyNode = jobject.SelectToken($"$.quotes.USD{BaseCurrencyCode}");
+
+            if (BaseCurrencyNode == null)
+            {
+                throw new InvalidPluginExecutionException($"Exchange Rates for your Base Currency ({BaseCurrencyName}) are not available");
+            }
+
+            var usdToBaseCurrencyRate = BaseCurrencyNode.Value<decimal>();
 
             #endregion Get Base Currency
 
@@ -41,11 +89,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
             query = new QueryExpression("transactioncurrency")
             {
-                ColumnSet = new ColumnSet("isocurrencycode")
+                ColumnSet = new ColumnSet("isocurrencycode", "currencyname")
             };
             query.Criteria.AddCondition("transactioncurrencyid", ConditionOperator.NotEqual, BaseCurrencyId);
 
-            List<Entity> allCurrencies = service.RetrieveMultiple(query).Entities.ToList();
+            List<Entity> allCurrencies = Context.SystemService.RetrieveMultiple(query).Entities.ToList();
 
             #endregion Getting All Currencies Except Base Currency
 
@@ -53,23 +101,26 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
             foreach (Entity currency in allCurrencies)
             {
-                string currencyCode = currency.GetAttributeValue<string>("isocurrencycode").ToUpper();
+                var currencyCode = currency.GetAttributeValue<string>("isocurrencycode").ToUpper();
+                var currencyName = currency.GetAttributeValue<string>("currencyname");
 
-                string url = "http://www.webservicex.net/CurrencyConvertor.asmx/ConversionRate?FromCurrency=" + BaseCurrencyCode + "&ToCurrency=" + currencyCode;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                using (StreamReader resStream = new StreamReader(request.GetResponse().GetResponseStream()))
+                var currencyNode = jobject.SelectToken($"$.quotes.USD{currencyCode}");
+
+                if (currencyNode == null)
                 {
-                    var doc = new XmlDocument();
-                    string xmlResult = resStream.ReadToEnd();
-                    doc.LoadXml(xmlResult);
-
-                    decimal rate = decimal.Parse(doc.DocumentElement.FirstChild.Value, CultureInfo.InvariantCulture);
-
-                    currency.Attributes.Clear();
-                    currency["exchangerate"] = rate;
-
-                    service.Update(currency);
+                    Context.TracingService.Trace($"Can't refresh exchange rate for {currencyName} currency");
+                    continue;
                 }
+
+                var usdToCurrencyRate = currencyNode.Value<decimal>();
+
+
+                decimal rate = usdToCurrencyRate / usdToBaseCurrencyRate;
+
+                currency.Attributes.Clear();
+                currency["exchangerate"] = rate;
+
+                Context.SystemService.Update(currency);
             }
 
             #endregion Looping through currencies and updating Exhange Rates

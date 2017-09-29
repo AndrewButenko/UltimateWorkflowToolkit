@@ -21,14 +21,14 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var record = ConvertToEntityReference(Record.Get(executionContext), service);
+            var record = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            service.Execute(new RemoveMemberListRequest()
+            Context.UserService.Execute(new RemoveMemberListRequest()
             {
                 EntityId = record.Id,
-                ListId = List.Get(executionContext).Id
+                ListId = List.Get(Context.ExecutionContext).Id
             });
         }
     }

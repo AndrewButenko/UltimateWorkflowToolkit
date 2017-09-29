@@ -25,18 +25,17 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service,
-            IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var attachmentsQuery = new QueryByAttribute("activitymimeattachment")
             {
                 ColumnSet = new ColumnSet("body", "filename")
             };
-            attachmentsQuery.AddAttributeValue("objectid", Email.Get(executionContext).Id);
+            attachmentsQuery.AddAttributeValue("objectid", Email.Get(Context.ExecutionContext).Id);
 
-            var attachments = QueryWithPaging(attachmentsQuery, sysService);
+            var attachments = QueryWithPaging(attachmentsQuery);
 
-            var record = ConvertToEntityReference(Record.Get(executionContext), sysService);
+            var record = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
             attachments.ForEach(attachment =>
             {
@@ -48,7 +47,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
                     ["objectid"] = record
                 };
 
-                service.Create(note);
+                Context.UserService.Create(note);
             });
         }
 

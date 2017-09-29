@@ -38,22 +38,22 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var convertQuoteToSalesOrderRequest = new ConvertQuoteToSalesOrderRequest()
             {
                 ColumnSet = new ColumnSet("salesorderid"),
-                QuoteCloseDate = CloseDate.Get(executionContext),
-                QuoteCloseDescription = Description.Get(executionContext),
-                QuoteCloseStatus = QuoteStatus.Get(executionContext),
-                QuoteCloseSubject = Subject.Get(executionContext),
-                QuoteId = Quote.Get(executionContext).Id
+                QuoteCloseDate = CloseDate.Get(Context.ExecutionContext),
+                QuoteCloseDescription = Description.Get(Context.ExecutionContext),
+                QuoteCloseStatus = QuoteStatus.Get(Context.ExecutionContext),
+                QuoteCloseSubject = Subject.Get(Context.ExecutionContext),
+                QuoteId = Quote.Get(Context.ExecutionContext).Id
             };
 
             var convertQuoteToSalesOrderResponse =
-                (ConvertQuoteToSalesOrderResponse) service.Execute(convertQuoteToSalesOrderRequest);
+                (ConvertQuoteToSalesOrderResponse) Context.UserService.Execute(convertQuoteToSalesOrderRequest);
 
-            SalesOrder.Set(executionContext, convertQuoteToSalesOrderResponse.Entity.ToEntityReference());
+            SalesOrder.Set(Context.ExecutionContext, convertQuoteToSalesOrderResponse.Entity.ToEntityReference());
         }
     }
 }

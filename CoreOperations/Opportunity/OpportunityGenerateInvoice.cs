@@ -22,14 +22,11 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #region Overriddes
 
-        protected override EntityReference GetSourceEntity(CodeActivityContext executionContext)
-        {
-            return Opportunity.Get(executionContext);
-        }
+        protected override EntityReference SourceEntity => Opportunity.Get(Context.ExecutionContext);
 
-        protected override void SetTargetEntity(CodeActivityContext executionContext, EntityReference target)
+        protected override void SetTargetEntity(EntityReference target)
         {
-            Invoice.Set(executionContext, target);
+            Invoice.Set(Context.ExecutionContext, target);
         }
 
         protected override string SourceEntityChild => "opportunityproduct";

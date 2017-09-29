@@ -44,22 +44,19 @@ namespace UltimateWorkflowToolkit.CoreOperations.Invoice
 
         protected override string ProductEntityName => "invoicedetail";
         protected override string ParentEntityLookupFieldName => "invoiceid";
-        protected override EntityReference GetParentEntity(CodeActivityContext executionContext)
-        {
-            return Invoice.Get(executionContext);
-        }
+        protected override EntityReference ParentEntity => Invoice.Get(Context.ExecutionContext);
 
-        protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
+        protected override void ProcessAdditionalFields(ref Entity record)
         {
-            record["actualdeliveryon"] = ActualDeliveryOn.Get(executionContext);
-            record["iscopied"] = IsCopied.Get(executionContext);
-            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
-            record["quantitybackordered"] = QuantityBackOrdered.Get(executionContext);
-            record["quantitycancelled"] = QuantityCancelled.Get(executionContext);
-            record["quantityshipped"] = QuantityShipped.Get(executionContext);
-            record["shippingtrackingnumber"] = ShippingTrackingNumber.Get(executionContext);
+            record["actualdeliveryon"] = ActualDeliveryOn.Get(Context.ExecutionContext);
+            record["iscopied"] = IsCopied.Get(Context.ExecutionContext);
+            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(Context.ExecutionContext);
+            record["quantitybackordered"] = QuantityBackOrdered.Get(Context.ExecutionContext);
+            record["quantitycancelled"] = QuantityCancelled.Get(Context.ExecutionContext);
+            record["quantityshipped"] = QuantityShipped.Get(Context.ExecutionContext);
+            record["shippingtrackingnumber"] = ShippingTrackingNumber.Get(Context.ExecutionContext);
 
-            base.ProcessAdditionalFields(ref record, executionContext);
+            base.ProcessAdditionalFields(ref record);
         }
 
         #endregion Overriddes

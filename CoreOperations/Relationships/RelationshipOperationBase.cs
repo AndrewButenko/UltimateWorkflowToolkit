@@ -29,15 +29,14 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #region Abstract Methods
 
-        public abstract void PerformRelationshipOperation(CodeActivityContext executionContext, IOrganizationService service, Entity childRecord);
+        public abstract void PerformRelationshipOperation(Entity childRecord);
 
         #endregion Abstract Methods
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var record = ConvertToEntityReference(Record.Get(executionContext), service);
-            var relationshipName = RelationshipName.Get(executionContext);
+            var record = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
+            var relationshipName = RelationshipName.Get(Context.ExecutionContext);
             var relationship = new Relationship(relationshipName);
 
             var retrieveEntityRequest = new RetrieveEntityRequest()
@@ -47,7 +46,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
                 RetrieveAsIfPublished = true
             };
 
-            var retrieveEntityResponse = (RetrieveEntityResponse) sysService.Execute(retrieveEntityRequest);
+            var retrieveEntityResponse = (RetrieveEntityResponse) Context.SystemService.Execute(retrieveEntityRequest);
 
             string childEntityName = null;
 
@@ -78,7 +77,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
                   <entity name='{childEntityName}'>
                     <attribute name='{childEntityName}id' />";
 
-            var additionalConditions = AdditionalFilterArgument.Get(executionContext);
+            var additionalConditions = AdditionalFilterArgument.Get(Context.ExecutionContext);
 
             if (!string.IsNullOrEmpty(additionalConditions))
                 childRecordsFetchXml += $"<filter type='and'>{additionalConditions.Replace('"', '\'')}</filter>";
@@ -97,13 +96,13 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
                 }
             };
 
-            var retrieveResponse = (RetrieveResponse) service.Execute(retrieveRequest);
+            var retrieveResponse = (RetrieveResponse) Context.UserService.Execute(retrieveRequest);
 
             var childRecords = retrieveResponse.Entity.RelatedEntities[relationship].Entities.ToList();
 
             foreach (var childRecord in childRecords)
             {
-                PerformRelationshipOperation(executionContext, service, childRecord);
+                PerformRelationshipOperation(childRecord);
             }
         }
     }

@@ -22,11 +22,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.Views
 
         #region Overriddes
 
-        protected override void ProcessRecords(List<Entity> records, CodeActivityContext executionContext, IOrganizationService service, IOrganizationService sysService)
+        protected override void ProcessRecords(List<Entity> records)
         {
-            var workflow = Workflow.Get(executionContext).Id;
+            var workflow = Workflow.Get(Context.ExecutionContext).Id;
 
-            records.ForEach(t => service.Execute(new ExecuteWorkflowRequest()
+            records.ForEach(t => Context.UserService.Execute(new ExecuteWorkflowRequest()
             {
                 EntityId = t.Id,
                 WorkflowId = workflow

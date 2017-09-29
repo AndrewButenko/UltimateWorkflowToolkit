@@ -22,17 +22,17 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var reviseQuoteRequest = new ReviseQuoteRequest()
             {
                 ColumnSet = new ColumnSet("quoteid"),
-                QuoteId = Quote.Get(executionContext).Id
+                QuoteId = Quote.Get(Context.ExecutionContext).Id
             };
 
-            var reviseQuoteResponse = (ReviseQuoteResponse) service.Execute(reviseQuoteRequest);
+            var reviseQuoteResponse = (ReviseQuoteResponse) Context.UserService.Execute(reviseQuoteRequest);
 
-            RevisedQuote.Set(executionContext, reviseQuoteResponse.Entity.ToEntityReference());
+            RevisedQuote.Set(Context.ExecutionContext, reviseQuoteResponse.Entity.ToEntityReference());
         }
     }
 }

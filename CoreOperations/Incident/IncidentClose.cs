@@ -32,21 +32,21 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var incidentCloseRequest = new CloseIncidentRequest()
             {
-                Status = IncidentStatus.Get(executionContext),
+                Status = IncidentStatus.Get(Context.ExecutionContext),
                 IncidentResolution = new Entity("incidentresolution")
                 {
-                    ["subject"] = Subject.Get(executionContext),
-                    ["incidentid"] = Incident.Get(executionContext),
-                    ["description"] = Description.Get(executionContext),
-                    ["timespent"] = TimeSpent.Get(executionContext)
+                    ["subject"] = Subject.Get(Context.ExecutionContext),
+                    ["incidentid"] = Incident.Get(Context.ExecutionContext),
+                    ["description"] = Description.Get(Context.ExecutionContext),
+                    ["timespent"] = TimeSpent.Get(Context.ExecutionContext)
                 }
             };
 
-            service.Execute(incidentCloseRequest);
+            Context.UserService.Execute(incidentCloseRequest);
         }
     }
 }

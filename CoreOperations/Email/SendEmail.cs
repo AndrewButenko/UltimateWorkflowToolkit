@@ -19,12 +19,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service,
-            IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            service.Execute(new SendEmailRequest()
+            Context.UserService.Execute(new SendEmailRequest()
             {
-                EmailId = Email.Get(executionContext).Id,
+                EmailId = Email.Get(Context.ExecutionContext).Id,
                 IssueSend = true,
                 TrackingToken = string.Empty
             });

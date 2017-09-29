@@ -17,9 +17,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var record = ConvertToEntityReference(Record.Get(executionContext), service);
+            var record = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
             var listsQuery = new QueryExpression("list")
             {
@@ -28,9 +28,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
             var listMemberLink = listsQuery.AddLink("listmember", "listid", "listid");
             listMemberLink.LinkCriteria.AddCondition("entityid", ConditionOperator.Equal, record.Id);
 
-            var allLists = QueryWithPaging(listsQuery, service);
+            var allLists = QueryWithPaging(listsQuery);
 
-            allLists.ForEach(l => service.Execute(new RemoveMemberListRequest()
+            allLists.ForEach(l => Context.UserService.Execute(new RemoveMemberListRequest()
             {
                 EntityId = record.Id,
                 ListId = l.Id

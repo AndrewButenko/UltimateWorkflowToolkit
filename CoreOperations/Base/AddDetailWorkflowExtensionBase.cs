@@ -50,23 +50,23 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #region Overrides
 
-        protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
+        protected override void ProcessAdditionalFields(ref Entity record)
         {
             if (record == null)
                 throw new ArgumentNullException(nameof(record));
 
-            record["salesrepid"] = SalesRepId.Get(executionContext);
-            record["shipto_city"] = ShipToCity.Get(executionContext);
-            record["shipto_country"] = ShipToCountry.Get(executionContext);
-            record["shipto_fax"] = ShipToFax.Get(executionContext);
-            record["shipto_line1"] = ShipToLine1.Get(executionContext);
-            record["shipto_line2"] = ShipToLine2.Get(executionContext);
-            record["shipto_line3"] = ShipToLine3.Get(executionContext);
-            record["shipto_name"] = ShipToName.Get(executionContext);
-            record["shipto_postalcode"] = ShipToPostalCode.Get(executionContext);
-            record["shipto_stateorprovince"] = ShipToStateOrProvince.Get(executionContext);
-            record["shipto_telephone"] = ShipToTelephone.Get(executionContext);
-            record["willcall"] = WillCall.Get(executionContext);
+            record["salesrepid"] = SalesRepId.Get(Context.ExecutionContext);
+            record["shipto_city"] = ShipToCity.Get(Context.ExecutionContext);
+            record["shipto_country"] = ShipToCountry.Get(Context.ExecutionContext);
+            record["shipto_fax"] = ShipToFax.Get(Context.ExecutionContext);
+            record["shipto_line1"] = ShipToLine1.Get(Context.ExecutionContext);
+            record["shipto_line2"] = ShipToLine2.Get(Context.ExecutionContext);
+            record["shipto_line3"] = ShipToLine3.Get(Context.ExecutionContext);
+            record["shipto_name"] = ShipToName.Get(Context.ExecutionContext);
+            record["shipto_postalcode"] = ShipToPostalCode.Get(Context.ExecutionContext);
+            record["shipto_stateorprovince"] = ShipToStateOrProvince.Get(Context.ExecutionContext);
+            record["shipto_telephone"] = ShipToTelephone.Get(Context.ExecutionContext);
+            record["willcall"] = WillCall.Get(Context.ExecutionContext);
         }
 
         #endregion Overrides

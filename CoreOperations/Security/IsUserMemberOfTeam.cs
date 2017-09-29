@@ -25,21 +25,20 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var userQuery = new QueryExpression("systemuser")
             {
                 ColumnSet = new ColumnSet(false)
             };
-            userQuery.Criteria.AddCondition("systemuserid", ConditionOperator.Equal, User.Get(executionContext).Id);
+            userQuery.Criteria.AddCondition("systemuserid", ConditionOperator.Equal, User.Get(Context.ExecutionContext).Id);
 
             var teamLink = userQuery.AddLink("teammembership", "systemuserid", "systemuserid");
-            teamLink.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, Team.Get(executionContext).Id);
+            teamLink.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, Team.Get(Context.ExecutionContext).Id);
 
-            var isMember = service.RetrieveMultiple(userQuery).Entities.Count != 0;
+            var isMember = Context.SystemService.RetrieveMultiple(userQuery).Entities.Count != 0;
 
-            IsMember.Set(executionContext, isMember);
+            IsMember.Set(Context.ExecutionContext, isMember);
         }
     }
 }

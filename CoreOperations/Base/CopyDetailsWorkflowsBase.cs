@@ -18,9 +18,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #region Abstracts
 
-        protected abstract EntityReference GetSourceEntityParent(CodeActivityContext executionContext);
+        protected abstract EntityReference SourceEntityParent { get; }
 
-        protected abstract EntityReference GetTargetEntityParent(CodeActivityContext executionContext);
+        protected abstract EntityReference TargetEntityParent { get; }
 
         protected abstract string SourceEntity { get; }
 
@@ -34,17 +34,16 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service,
-            IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var additionalCondition = Conditions.Get(executionContext) ?? string.Empty;
+            var additionalCondition = Conditions.Get(Context.ExecutionContext) ?? string.Empty;
 
             var sourceEntityFetchXml = $@"
                 <fetch>
                   <entity name='{SourceEntity}' >
                     <attribute name='{SourceEntity}id' />
                     <filter type='and' >
-                      <condition attribute='{SourceEntityLookupFieldName}' operator='eq' value='{GetSourceEntityParent(executionContext).Id}' />
+                      <condition attribute='{SourceEntityLookupFieldName}' operator='eq' value='{SourceEntityParent.Id}' />
                       {additionalCondition}
                     </filter>
                   </entity>
@@ -52,7 +51,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
             var sourceEntityQuery = new FetchExpression(sourceEntityFetchXml);
 
-            var sourceEntities = QueryWithPaging(sourceEntityQuery, service);
+            var sourceEntities = QueryWithPaging(sourceEntityQuery);
 
             foreach (var sourceEntity in sourceEntities)
             {
@@ -63,11 +62,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
                     TargetFieldType = TargetFieldType.ValidForCreate
                 };
 
-                var initializeFromResponse = (InitializeFromResponse) service.Execute(initializeFromRequest);
+                var initializeFromResponse = (InitializeFromResponse)Context.UserService.Execute(initializeFromRequest);
 
                 var targetEntity = initializeFromResponse.Entity;
-                targetEntity[TargetEntityLookupFieldName] = GetTargetEntityParent(executionContext);
-                service.Create(targetEntity);
+                targetEntity[TargetEntityLookupFieldName] = TargetEntityParent;
+                Context.UserService.Create(targetEntity);
             }
         }
 

@@ -17,14 +17,14 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var unlockSalesOrderPricingRequest = new UnlockSalesOrderPricingRequest()
             {
-                SalesOrderId = SalesOrder.Get(executionContext).Id
+                SalesOrderId = SalesOrder.Get(Context.ExecutionContext).Id
             };
 
-            service.Execute(unlockSalesOrderPricingRequest);
+            Context.UserService.Execute(unlockSalesOrderPricingRequest);
         }
 
     }

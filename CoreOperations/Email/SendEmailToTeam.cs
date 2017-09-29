@@ -23,12 +23,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #region Overriddes
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service,
-            IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var emailId = Email.Get(executionContext).Id;
+            var emailId = Email.Get(Context.ExecutionContext).Id;
 
-            var email = sysService.Retrieve("email", emailId, new ColumnSet("to"));
+            var email = Context.UserService.Retrieve("email", emailId, new ColumnSet("to"));
             var to = email.Contains("to") ? email.GetAttributeValue<EntityCollection>("to") : new EntityCollection();
 
             var userQuery = new QueryExpression("systemuser")
@@ -36,9 +35,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
                 ColumnSet = new ColumnSet(false)
             };
             var teamLink = userQuery.AddLink("teammembership", "systemuserid", "systemuserid");
-            teamLink.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, Team.Get(executionContext).Id);
+            teamLink.LinkCriteria.AddCondition("teamid", ConditionOperator.Equal, Team.Get(Context.ExecutionContext).Id);
 
-            var users = QueryWithPaging(userQuery, service);
+            var users = QueryWithPaging(userQuery);
 
             users.ForEach(u =>
             {
@@ -49,10 +48,10 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
             });
 
             email["to"] = to;
-            sysService.Update(email);
+            Context.UserService.Update(email);
 
-            if (SendAfterOperation.Get(executionContext))
-                base.ExecuteWorkflowLogic(executionContext, context, service, sysService);
+            if (SendAfterOperation.Get(Context.ExecutionContext))
+                base.ExecuteWorkflowLogic();
         }
 
         #endregion Overriddes

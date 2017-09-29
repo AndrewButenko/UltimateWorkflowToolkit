@@ -44,22 +44,19 @@ namespace UltimateWorkflowToolkit.CoreOperations.SalesOrder
 
         protected override string ProductEntityName => "salesorderdetail";
         protected override string ParentEntityLookupFieldName => "salesorderid";
-        protected override EntityReference GetParentEntity(CodeActivityContext executionContext)
-        {
-            return SalesOrder.Get(executionContext);
-        }
+        protected override EntityReference ParentEntity => SalesOrder.Get(Context.ExecutionContext);
 
-        protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
+        protected override void ProcessAdditionalFields(ref Entity record)
         {
-            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(executionContext);
-            record["shipto_contactname"] = ShipToContactName.Get(executionContext);
-            record["quantitybackordered"] = QuantityBackOrdered.Get(executionContext);
-            record["quantitycancelled"] = QuantityCancelled.Get(executionContext);
-            record["quantityshipped"] = QuantityShipped.Get(executionContext);
-            record["requestdeliveryby"] = RequestDeliveryBy.Get(executionContext);
-            record["iscopied"] = IsCopied.Get(executionContext);
+            record["shipto_freighttermscode"] = ShipToFreightTerms.Get(Context.ExecutionContext);
+            record["shipto_contactname"] = ShipToContactName.Get(Context.ExecutionContext);
+            record["quantitybackordered"] = QuantityBackOrdered.Get(Context.ExecutionContext);
+            record["quantitycancelled"] = QuantityCancelled.Get(Context.ExecutionContext);
+            record["quantityshipped"] = QuantityShipped.Get(Context.ExecutionContext);
+            record["requestdeliveryby"] = RequestDeliveryBy.Get(Context.ExecutionContext);
+            record["iscopied"] = IsCopied.Get(Context.ExecutionContext);
 
-            base.ProcessAdditionalFields(ref record, executionContext);
+            base.ProcessAdditionalFields(ref record);
         }
 
         #endregion Overriddes

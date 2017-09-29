@@ -26,16 +26,15 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var target = ConvertToEntityReference(Record.Get(executionContext), service);
+            var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            sysService.Execute(new RemoveUserFromRecordTeamRequest()
+            Context.SystemService.Execute(new RemoveUserFromRecordTeamRequest()
             {
                 Record = target,
-                SystemUserId = User.Get(executionContext).Id,
-                TeamTemplateId = TeamTemplate.Get(executionContext).Id
+                SystemUserId = User.Get(Context.ExecutionContext).Id,
+                TeamTemplateId = TeamTemplate.Get(Context.ExecutionContext).Id
             });
         }
     }

@@ -29,10 +29,10 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var record1 = ConvertToEntityReference(Record1Id.Get(executionContext), service);
-            var record2 = ConvertToEntityReference(Record2Id.Get(executionContext), service);
+            var record1 = ConvertToEntityReference(Record1Id.Get(Context.ExecutionContext));
+            var record2 = ConvertToEntityReference(Record2Id.Get(Context.ExecutionContext));
 
             var record2Query = new QueryByAttribute(record2.LogicalName)
             {
@@ -40,7 +40,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
             };
             record2Query.AddAttributeValue($"{record2.LogicalName}id", record2.Id);
 
-            var relationship = new Relationship(RelationshipName.Get(executionContext));
+            var relationship = new Relationship(RelationshipName.Get(Context.ExecutionContext));
 
             var retrieveRequest = new RetrieveRequest()
             {
@@ -52,11 +52,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
                 }
             };
 
-            var retrieveResponse = (RetrieveResponse) sysService.Execute(retrieveRequest);
+            var retrieveResponse = (RetrieveResponse) Context.SystemService.Execute(retrieveRequest);
 
             var isRelationshipExists = retrieveResponse.Entity.RelatedEntities[relationship].Entities.Count != 0;
 
-            RelationshipExists.Set(executionContext, isRelationshipExists);
+            RelationshipExists.Set(Context.ExecutionContext, isRelationshipExists);
         }
     }
 }

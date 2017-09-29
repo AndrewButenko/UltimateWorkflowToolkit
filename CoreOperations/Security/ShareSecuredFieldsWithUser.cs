@@ -17,10 +17,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #region Overrides
 
-        public override EntityReference GetPrincipal(CodeActivityContext executionContext)
-        {
-            return User.Get(executionContext);
-        }
+        public override EntityReference Principal => User.Get(Context.ExecutionContext);
 
         #endregion Overrides
     }

@@ -45,50 +45,49 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         protected abstract string ProductEntityName { get; }
         protected abstract string ParentEntityLookupFieldName { get; }
-        protected abstract EntityReference GetParentEntity(CodeActivityContext executionContext);
-        protected abstract void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext);
+        protected abstract EntityReference ParentEntity { get; }
+        protected abstract void ProcessAdditionalFields(ref Entity record);
 
         #endregion Abstracts
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var detailRecord = new Entity(ProductEntityName)
             {
-                [ParentEntityLookupFieldName] = GetParentEntity(executionContext),
-                ["quantity"] = Quantity.Get(executionContext),
-                ["description"] = Description.Get(executionContext),
-                ["manualdiscountamount"] = ManualDiscountAmount.Get(executionContext),
-                ["tax"] = Tax.Get(executionContext)
+                [ParentEntityLookupFieldName] = ParentEntity,
+                ["quantity"] = Quantity.Get(Context.ExecutionContext),
+                ["description"] = Description.Get(Context.ExecutionContext),
+                ["manualdiscountamount"] = ManualDiscountAmount.Get(Context.ExecutionContext),
+                ["tax"] = Tax.Get(Context.ExecutionContext)
             };
 
-            var writeInProduct = ProductName.Get(executionContext);
+            var writeInProduct = ProductName.Get(Context.ExecutionContext);
 
             if (!string.IsNullOrEmpty(writeInProduct))
             {
                 detailRecord["productdescription"] = writeInProduct;
                 detailRecord["isproductoverridden"] = true;
                 detailRecord["ispriceoverridden"] = true;
-                detailRecord["priceperunit"] = PricePerUnit.Get(executionContext);
+                detailRecord["priceperunit"] = PricePerUnit.Get(Context.ExecutionContext);
             }
             else
             {
-                detailRecord["productid"] = ProductId.Get(executionContext);
+                detailRecord["productid"] = ProductId.Get(Context.ExecutionContext);
                 detailRecord["isproductoverridden"] = false;
-                detailRecord["uomid"] = UomId.Get(executionContext);
+                detailRecord["uomid"] = UomId.Get(Context.ExecutionContext);
 
-                var ispriceoverridden = IsPriceOverridden.Get(executionContext);
+                var ispriceoverridden = IsPriceOverridden.Get(Context.ExecutionContext);
                 detailRecord["ispriceoverridden"] = ispriceoverridden;
 
                 if (ispriceoverridden)
                 {
-                    detailRecord["priceperunit"] = PricePerUnit.Get(executionContext);
+                    detailRecord["priceperunit"] = PricePerUnit.Get(Context.ExecutionContext);
                 }
             }
 
-            ProcessAdditionalFields(ref detailRecord, executionContext);
+            ProcessAdditionalFields(ref detailRecord);
 
-            service.Create(detailRecord);
+            Context.UserService.Create(detailRecord);
         }
     }
 }

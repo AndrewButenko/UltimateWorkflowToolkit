@@ -16,12 +16,12 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #endregion Input Parameters
 
-        public override void PerformRelationshipOperation(CodeActivityContext executionContext, IOrganizationService service, Entity childRecord)
+        public override void PerformRelationshipOperation(Entity childRecord)
         {
-            service.Execute(new ExecuteWorkflowRequest()
+            Context.UserService.Execute(new ExecuteWorkflowRequest()
             {
                 EntityId = childRecord.Id,
-                WorkflowId = Workflow.Get(executionContext).Id
+                WorkflowId = Workflow.Get(Context.ExecutionContext).Id
             });
         }
     }

@@ -23,18 +23,15 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #region Overrides
 
-        protected override Guid GetParentRecordId(CodeActivityContext executionContext)
-        {
-            return Quote.Get(executionContext).Id;
-        }
+        protected override Guid ParentRecordId => Quote.Get(Context.ExecutionContext).Id;
 
         protected override string ResolutionEntityName => "quoteclose";
 
         protected override string ParentRecordLookupFieldName => "quoteid";
 
-        protected override void SetResolutionEntity(CodeActivityContext executionContext, EntityReference resolution)
+        protected override void SetResolutionEntity(EntityReference resolution)
         {
-            QuoteClose.Set(executionContext, resolution);
+            QuoteClose.Set(Context.ExecutionContext, resolution);
         }
 
         #endregion Overrides

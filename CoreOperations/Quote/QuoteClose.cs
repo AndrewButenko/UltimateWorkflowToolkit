@@ -33,21 +33,21 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
             var quoteCloseRequest = new CloseQuoteRequest()
             {
-                Status = QuoteStatus.Get(executionContext),
+                Status = QuoteStatus.Get(Context.ExecutionContext),
                 QuoteClose = new Entity("quoteclose")
                 {
-                    ["subject"] = Subject.Get(executionContext),
-                    ["quoteid"] = Quote.Get(executionContext),
-                    ["actualend"] = CloseDate.Get(executionContext),
-                    ["description"] = Description.Get(executionContext)
+                    ["subject"] = Subject.Get(Context.ExecutionContext),
+                    ["quoteid"] = Quote.Get(Context.ExecutionContext),
+                    ["actualend"] = CloseDate.Get(Context.ExecutionContext),
+                    ["description"] = Description.Get(Context.ExecutionContext)
                 }
             };
 
-            service.Execute(quoteCloseRequest);
+            Context.UserService.Execute(quoteCloseRequest);
         }
     }
 }

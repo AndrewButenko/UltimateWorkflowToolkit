@@ -20,12 +20,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Opportunity
 
         protected override string ProductEntityName => "opportunityproduct";
         protected override string ParentEntityLookupFieldName => "opportunityid";
-        protected override EntityReference GetParentEntity(CodeActivityContext executionContext)
-        {
-            return Opportunity.Get(executionContext);
-        }
+        protected override EntityReference ParentEntity => Opportunity.Get(Context.ExecutionContext);
 
-        protected override void ProcessAdditionalFields(ref Entity record, CodeActivityContext executionContext)
+        protected override void ProcessAdditionalFields(ref Entity record)
         {
         }
 

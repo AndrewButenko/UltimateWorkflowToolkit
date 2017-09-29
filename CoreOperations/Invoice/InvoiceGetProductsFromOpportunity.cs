@@ -24,15 +24,9 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #region Overriddes
 
-        protected override EntityReference GetSourceEntityParent(CodeActivityContext executionContext)
-        {
-            return Opportunity.Get(executionContext);
-        }
+        protected override EntityReference SourceEntityParent => Opportunity.Get(Context.ExecutionContext);
 
-        protected override EntityReference GetTargetEntityParent(CodeActivityContext executionContext)
-        {
-            return Invoice.Get(executionContext);
-        }
+        protected override EntityReference TargetEntityParent => Invoice.Get(Context.ExecutionContext);
 
         protected override string SourceEntity => "opportunityproduct";
         protected override string SourceEntityLookupFieldName => "opportunityid";

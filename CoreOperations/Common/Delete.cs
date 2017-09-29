@@ -15,11 +15,11 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Arguments
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var target = ConvertToEntityReference(Record.Get(executionContext), service);
+            var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            service.Delete(target.LogicalName, target.Id);
+            Context.SystemService.Delete(target.LogicalName, target.Id);
         }
     }
 }

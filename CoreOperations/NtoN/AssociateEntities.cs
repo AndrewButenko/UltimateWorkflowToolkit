@@ -24,16 +24,16 @@ namespace UltimateWorkflowToolkit.CoreOperations.NtoN
 
         #endregion Input/Output Parameters
 
-        protected override void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context, IOrganizationService service, IOrganizationService sysService)
+        protected override void ExecuteWorkflowLogic()
         {
-            var record1 = ConvertToEntityReference(Record1Id.Get(executionContext), service);
-            var record2 = ConvertToEntityReference(Record2Id.Get(executionContext), service);
+            var record1 = ConvertToEntityReference(Record1Id.Get(Context.ExecutionContext));
+            var record2 = ConvertToEntityReference(Record2Id.Get(Context.ExecutionContext));
 
-            service.Execute(new AssociateEntitiesRequest()
+            Context.UserService.Execute(new AssociateEntitiesRequest()
             {
                 Moniker1 = record1,
                 Moniker2 = record2,
-                RelationshipName = RelationshipName.Get(executionContext)
+                RelationshipName = RelationshipName.Get(Context.ExecutionContext)
             });
         }
     }

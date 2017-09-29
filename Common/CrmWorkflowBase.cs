@@ -33,8 +33,7 @@ namespace UltimateWorkflowToolkit.Common
 
         #region Abstract methods
 
-        protected abstract void ExecuteWorkflowLogic(CodeActivityContext executionContext, IWorkflowContext context,
-            IOrganizationService service, IOrganizationService sysService);
+        protected abstract void ExecuteWorkflowLogic();
 
         #endregion Abstracts methods    
 
@@ -42,52 +41,48 @@ namespace UltimateWorkflowToolkit.Common
 
         protected override void Execute(CodeActivityContext executionContext)
         {
-            var context = executionContext.GetExtension<IWorkflowContext>();
-            var serviceFactory = executionContext.GetExtension<IOrganizationServiceFactory>();
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-            var systemService = serviceFactory.CreateOrganizationService(null);
-            var tracingService = executionContext.GetExtension<ITracingService>();
+            Context = new WorkflowContext(executionContext);
 
             #region Log All Inputs
 
-var properties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var properties = GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-properties.ToList().ForEach(p =>
-{
-    if (p.PropertyType.IsSubclassOf(typeof(InArgument)) ||
-        p.PropertyType.IsSubclassOf(typeof(InOutArgument)))
-    {
+            properties.ToList().ForEach(p =>
+            {
+                if (p.PropertyType.IsSubclassOf(typeof(InArgument)) ||
+                    p.PropertyType.IsSubclassOf(typeof(InOutArgument)))
+                {
 
-        var propertyLabel = ((InputAttribute) p.GetCustomAttribute(typeof(InputAttribute))).Name;
+                    var propertyLabel = ((InputAttribute)p.GetCustomAttribute(typeof(InputAttribute))).Name;
 
-        var logText = $"Value of '{propertyLabel}' attribute equals to ";
+                    var logText = $"Value of '{propertyLabel}' attribute equals to ";
 
-        var property = (Argument) p.GetValue(this);
-        var propertyValue = property.Get(executionContext);
+                    var property = (Argument)p.GetValue(this);
+                    var propertyValue = property.Get(executionContext);
 
-        if (propertyValue == null)
-            logText += "empty";
-        else if (propertyValue is string ||
-                    propertyValue is decimal ||
-                    propertyValue is int ||
-                    propertyValue is bool)
-            logText += propertyValue.ToString();
-        else if (propertyValue is DateTime)
-            logText += ((DateTime) propertyValue).ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz");
-        else if (propertyValue is EntityReference)
-        {
-            var er = (EntityReference) propertyValue;
-            logText += $"Id: {er.Id}, LogicalName: {er.LogicalName}";
-        }
-        else if (propertyValue is OptionSetValue)
-            logText += ((OptionSetValue) propertyValue).Value;
-        else if (propertyValue is Money)
-            logText += ((Money) propertyValue).Value.ToString(CultureInfo.InvariantCulture);
-        else logText += $"undefined type - {p.GetType().FullName}";
+                    if (propertyValue == null)
+                        logText += "empty";
+                    else if (propertyValue is string ||
+                                propertyValue is decimal ||
+                                propertyValue is int ||
+                                propertyValue is bool)
+                        logText += propertyValue.ToString();
+                    else if (propertyValue is DateTime)
+                        logText += ((DateTime)propertyValue).ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz");
+                    else if (propertyValue is EntityReference)
+                    {
+                        var er = (EntityReference)propertyValue;
+                        logText += $"Id: {er.Id}, LogicalName: {er.LogicalName}";
+                    }
+                    else if (propertyValue is OptionSetValue)
+                        logText += ((OptionSetValue)propertyValue).Value;
+                    else if (propertyValue is Money)
+                        logText += ((Money)propertyValue).Value.ToString(CultureInfo.InvariantCulture);
+                    else logText += $"undefined type - {p.GetType().FullName}";
 
-        tracingService.Trace(logText);
-    }
-});
+                    Context.TracingService.Trace(logText);
+                }
+            });
 
             #endregion Log All Inputs
 
@@ -95,13 +90,13 @@ properties.ToList().ForEach(p =>
 
             try
             {
-                ExecuteWorkflowLogic(executionContext, context, service, systemService);
+                ExecuteWorkflowLogic();
 
                 IsExceptionOccured.Set(executionContext, false);
             }
             catch (Exception e)
             {
-                if (IsThrowException.Get(executionContext) || context.WorkflowMode == (int)WorkflowExecutionMode.RealTime)
+                if (IsThrowException.Get(Context.ExecutionContext) || Context.WorkflowExecutionContext.WorkflowMode == (int)WorkflowExecutionMode.RealTime)
                     throw;
 
                 IsExceptionOccured.Set(executionContext, true);
@@ -113,13 +108,13 @@ properties.ToList().ForEach(p =>
 
         #region Publics
 
-        public EntityReference ConvertToEntityReference(string recordReference, IOrganizationService service)
+        public EntityReference ConvertToEntityReference(string recordReference)
         {
             Uri uriResult;
 
             if (Uri.TryCreate(recordReference, UriKind.Absolute, out uriResult))
             {
-                return ParseUrlToEntityReference(recordReference, service);
+                return ParseUrlToEntityReference(recordReference);
             }
 
             try
@@ -134,7 +129,7 @@ properties.ToList().ForEach(p =>
             }
         }
 
-        public List<Entity> QueryWithPaging(QueryBase query, IOrganizationService service)
+        public List<Entity> QueryWithPaging(QueryBase query)
         {
             var results = new List<Entity>();
             var initialFetchXml = string.Empty;
@@ -154,9 +149,9 @@ properties.ToList().ForEach(p =>
                 };
             else if (query is FetchExpression)
             {
-                initialFetchXml = ((FetchExpression) query).Query;
+                initialFetchXml = ((FetchExpression)query).Query;
                 var fetchXml = CreateFetchXml(initialFetchXml, null, 1, 500);
-                ((FetchExpression) query).Query = fetchXml;
+                ((FetchExpression)query).Query = fetchXml;
             }
             else
                 throw new Exception($"Paging for {query.GetType().FullName} is not supported yet!");
@@ -165,7 +160,7 @@ properties.ToList().ForEach(p =>
 
             do
             {
-                records = service.RetrieveMultiple(query);
+                records = Context.UserService.RetrieveMultiple(query);
 
                 results.AddRange(records.Entities);
 
@@ -176,8 +171,8 @@ properties.ToList().ForEach(p =>
                 }
                 else if (query is QueryExpression)
                 {
-                    ((QueryExpression) query).PageInfo.PageNumber++;
-                    ((QueryExpression) query).PageInfo.PagingCookie = records.PagingCookie;
+                    ((QueryExpression)query).PageInfo.PageNumber++;
+                    ((QueryExpression)query).PageInfo.PagingCookie = records.PagingCookie;
                 }
                 else
                 {
@@ -190,11 +185,17 @@ properties.ToList().ForEach(p =>
             return results;
         }
 
+        public WorkflowContext Context
+        {
+            get;
+            private set;
+        }
+
         #endregion Publics
 
         #region Privates
 
-        private EntityReference ParseUrlToEntityReference(string url, IOrganizationService service)
+        private EntityReference ParseUrlToEntityReference(string url)
         {
             var uri = new Uri(url);
 
@@ -238,11 +239,11 @@ properties.ToList().ForEach(p =>
                 Query = entityQueryExpression
             };
 
-            var response = (RetrieveMetadataChangesResponse)service.Execute(retrieveMetadataChangesRequest);
+            var response = (RetrieveMetadataChangesResponse)Context.SystemService.Execute(retrieveMetadataChangesRequest);
 
             if (response.EntityMetadata.Count >= 1)
             {
-                return  new EntityReference(response.EntityMetadata[0].LogicalName, id);
+                return new EntityReference(response.EntityMetadata[0].LogicalName, id);
             }
 
             return null;
