@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreOperations", "CoreOpera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiselectHelper", "MultiselectHelper\MultiselectHelper.csproj", "{2E826F55-B945-4C41-ADE0-EF8D4D3846AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE47DB29-FC51-4450-B2C2-98AFA33DDFFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E826F55-B945-4C41-ADE0-EF8D4D3846AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E826F55-B945-4C41-ADE0-EF8D4D3846AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E826F55-B945-4C41-ADE0-EF8D4D3846AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E826F55-B945-4C41-ADE0-EF8D4D3846AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
