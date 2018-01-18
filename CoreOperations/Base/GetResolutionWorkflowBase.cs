@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Workflow;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.Base

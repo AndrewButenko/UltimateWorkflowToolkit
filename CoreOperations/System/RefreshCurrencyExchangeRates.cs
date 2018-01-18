@@ -1,15 +1,13 @@
 ﻿using System.Net;
 using System.IO;
-using System.Xml;
 using System.Linq;
-using System.Globalization;
 using System.Activities;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Xrm.Sdk.Query;
 using UltimateWorkflowToolkit.Common;
-using Newtonsoft.Json.Linq;
 
 namespace UltimateWorkflowToolkit.CoreOperations.System
 {
@@ -17,13 +15,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
     public class RefreshCurrencyExchangeRates : CrmWorkflowBase
     {
-        #region Input/Output Arguments
-
-        [Input("Currency Layer Access Key")]
-        [RequiredArgument]
-        public InArgument<string> AcccessKey { get; set; }
-
-        #endregion Input/Output Arguments
 
         #region Overriddes
 
@@ -33,9 +24,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
             string jsonResult = null;
 
-            string url = "http://apilayer.net/api/live?access_key=" + AcccessKey.Get(Context.ExecutionContext);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            using (StreamReader resStream = new StreamReader(request.GetResponse().GetResponseStream()))
+            var url = "http://apilayer.net/api/live?access_key=" + Context.Settings.CurrencylayerKey;
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            using (var resStream = new StreamReader(request.GetResponse().GetResponseStream()))
             {
                 jsonResult = resStream.ReadToEnd();
             }
@@ -65,23 +56,23 @@ Info: {errorToken.SelectToken("info").Value<string>()}";
             };
             query.AddLink("organization", "transactioncurrencyid", "basecurrencyid", JoinOperator.Inner);
 
-            Entity BaseCurrency = Context.SystemService.RetrieveMultiple(query).Entities.FirstOrDefault();
+            var baseCurrency = Context.SystemService.RetrieveMultiple(query).Entities.FirstOrDefault();
 
-            if (BaseCurrency == null)
+            if (baseCurrency == null)
                 return;
 
-            var BaseCurrencyCode = BaseCurrency.GetAttributeValue<string>("isocurrencycode").ToUpper();
-            var BaseCurrencyId = BaseCurrency.Id;
-            var BaseCurrencyName = BaseCurrency.GetAttributeValue<string>("currencyname");
+            var baseCurrencyCode = baseCurrency.GetAttributeValue<string>("isocurrencycode").ToUpper();
+            var baseCurrencyId = baseCurrency.Id;
+            var baseCurrencyName = baseCurrency.GetAttributeValue<string>("currencyname");
 
-            var BaseCurrencyNode = jobject.SelectToken($"$.quotes.USD{BaseCurrencyCode}");
+            var baseCurrencyNode = jobject.SelectToken($"$.quotes.USD{baseCurrencyCode}");
 
-            if (BaseCurrencyNode == null)
+            if (baseCurrencyNode == null)
             {
-                throw new InvalidPluginExecutionException($"Exchange Rates for your Base Currency ({BaseCurrencyName}) are not available");
+                throw new InvalidPluginExecutionException($"Exchange Rates for your Base Currency ({baseCurrencyName}) are not available");
             }
 
-            var usdToBaseCurrencyRate = BaseCurrencyNode.Value<decimal>();
+            var usdToBaseCurrencyRate = baseCurrencyNode.Value<decimal>();
 
             #endregion Get Base Currency
 
@@ -91,7 +82,7 @@ Info: {errorToken.SelectToken("info").Value<string>()}";
             {
                 ColumnSet = new ColumnSet("isocurrencycode", "currencyname")
             };
-            query.Criteria.AddCondition("transactioncurrencyid", ConditionOperator.NotEqual, BaseCurrencyId);
+            query.Criteria.AddCondition("transactioncurrencyid", ConditionOperator.NotEqual, baseCurrencyId);
 
             List<Entity> allCurrencies = Context.SystemService.RetrieveMultiple(query).Entities.ToList();
 

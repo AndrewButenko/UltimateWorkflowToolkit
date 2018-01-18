@@ -13,6 +13,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
         [RequiredArgument]
         public InArgument<string> Record { get; set; }
 
+        [Input("Documents Filter")]
+        public InArgument<string> FilterXml { get; set; }
+
         [Input("Send Email")]
         [RequiredArgument]
         [Default("True")]

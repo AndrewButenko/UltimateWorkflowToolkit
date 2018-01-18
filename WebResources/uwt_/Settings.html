@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="jquery3.2.1.min.js" type="text/javascript"></script>
+    <script src="bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="Settings.js" type="text/javascript"></script>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .rightaligh {
+            text-align: right;
+        }
+    </style>
+</head>
+<body onload="Settings.OnLoad();">
+    <div class="m-4">
+        <div class="form-group">
+            <label for="teBingMapsKey">Bingmaps Key</label>
+            <input type="text" class="form-control" id="teBingMapsKey" placeholder="Enter BingMap Key">
+            <small id="teBingMapsKeyHelp" class="form-text text-muted">Visit <a href="https://www.bingmapsportal.com/Application" target="_blank">BingMaps Portal</a> to obtain a valid key</small>
+        </div>
+        <div class="form-group">
+            <label for="teCloudConvertKey">Cloudconvert API Key</label>
+            <input type="text" class="form-control" id="teCloudConvertKey" placeholder="Enter Cloudconvert API Key">
+            <small id="teCloudConvertKeyHelp" class="form-text text-muted">Visit <a href="https://cloudconvert.com/user/profile" target="_blank">Cloudconvert Portal</a> to obtain a valid key</small>
+        </div>
+        <div class="form-group">
+            <label for="teCurrencylayerKey">Currencylayer API Key</label>
+            <input type="text" class="form-control" id="teCurrencylayerKey" placeholder="Enter Currencylayer API Key">
+            <small id="teCurrencylayerKeyHelp" class="form-text text-muted">Visit <a href="https://currencylayer.com/dashboard" target="_blank">Currencylayer Portal</a> to obtain a valid key</small>
+        </div>
+        <input id="btnSave" class="btn btn-primary" type="button" onclick="Settings.OnSave();" value="Save" />
+    </div>
+</body>
+</html>

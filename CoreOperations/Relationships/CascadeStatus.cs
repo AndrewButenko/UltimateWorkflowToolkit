@@ -1,7 +1,7 @@
 ﻿using System.Activities;
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
+using Microsoft.Crm.Sdk.Messages;
 
 namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 {
@@ -19,7 +19,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #endregion Input Parameters
 
-        public override void PerformRelationshipOperation(Entity childRecord)
+        protected override void PerformRelationshipOperation(Entity childRecord)
         {
             Context.UserService.Execute(new SetStateRequest()
             {

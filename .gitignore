@@ -242,3 +242,4 @@ ModelManifest.xml
 .fake/
 /Workflows/CRMDeveloperExtensions.config
 /CoreOperations/CRMDeveloperExtensions.config
+/WebResources/CRMDeveloperExtensions.config

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using System.Linq;
 using System.Activities;
-using System.Linq;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Xrm.Sdk.Query;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.Security
@@ -64,11 +63,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
                 var crmAttribute =
                     retrieveEntityResponse.EntityMetadata.Attributes.FirstOrDefault(a => a.LogicalName == field);
 
-                if (crmAttribute == null)
-                    throw new Exception($"{field} attribute is not available in {target.LogicalName} entity");
+                if (crmAttribute?.IsSecured == null)
+                    throw new InvalidPluginExecutionException($"{field} attribute is not available in {target.LogicalName} entity");
 
                 if (!crmAttribute.IsSecured.Value)
-                    throw new Exception($"{field} attribute is not secured");
+                    throw new InvalidPluginExecutionException($"{field} attribute is not secured");
 
                 var queryPOAA = new QueryByAttribute("principalobjectattributeaccess")
                 {

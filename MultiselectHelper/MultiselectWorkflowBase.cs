@@ -1,4 +1,5 @@
-﻿using System.Activities;
+﻿using System;
+using System.Activities;
 using System.Collections.Generic;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -41,20 +42,23 @@ namespace UltimateWorkflowToolkit.MultiselectHelper
         {
             get
             {
-                if (Context == null || Context.ExecutionContext == null)
+                if (Context?.ExecutionContext == null)
                     return null;
 
                 return FieldNameString.Get(Context.ExecutionContext);
             }
         }
 
-        protected List<int> ConvertStringToIntArray(string StringValues)
+        protected List<int> ConvertStringToIntArray(string stringValues)
         {
-            List<int> intValues = new List<int>();
+            if (string.IsNullOrEmpty(stringValues))
+                throw new InvalidPluginExecutionException("Parameter StringValues can't be empty!");
 
-            var stringValues = StringValues.Replace(" ", string.Empty).Split('|');
+            var intValues = new List<int>();
 
-            foreach (var stringValue in stringValues)
+            var stringValuesList = stringValues.Replace(" ", string.Empty).Split('|');
+
+            foreach (var stringValue in stringValuesList)
             {
                 int parseResult;
 

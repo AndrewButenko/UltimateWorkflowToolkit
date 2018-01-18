@@ -1,5 +1,4 @@
 ﻿using System.Activities;
-using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using UltimateWorkflowToolkit.Common;
 

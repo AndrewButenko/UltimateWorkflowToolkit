@@ -1,14 +1,9 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using System.Linq;
+using System.Activities;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Workflow;
-using System;
-using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.System
@@ -31,7 +26,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
             var retrieveEntityResponse = (RetrieveEntityResponse)Context.SystemService.Execute(new RetrieveEntityRequest()
             {
-                EntityFilters = Microsoft.Xrm.Sdk.Metadata.EntityFilters.Attributes,
+                EntityFilters = EntityFilters.Attributes,
                 LogicalName = target.LogicalName,
                 RetrieveAsIfPublished = true
             });

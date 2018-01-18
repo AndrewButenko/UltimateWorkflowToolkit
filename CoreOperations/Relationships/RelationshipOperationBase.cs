@@ -29,7 +29,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #region Abstract Methods
 
-        public abstract void PerformRelationshipOperation(Entity childRecord);
+        protected abstract void PerformRelationshipOperation(Entity childRecord);
 
         #endregion Abstract Methods
 

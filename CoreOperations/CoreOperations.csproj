@@ -82,11 +82,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base\BuildRequestWorkflowBase.cs" />
+    <Compile Include="Base\SetFieldWorkflowBase.cs" />
     <Compile Include="Base\AddDetailWorkflowBase.cs" />
     <Compile Include="Base\AddDetailWorkflowExtensionBase.cs" />
     <Compile Include="Base\CopyDetailsWorkflowsBase.cs" />
     <Compile Include="Base\CreateChildFromParentWorkflowBase.cs" />
     <Compile Include="Base\GetResolutionWorkflowBase.cs" />
+    <Compile Include="Common\CheckForDuplicates.cs" />
     <Compile Include="Email\AttachNotesToEmailAndSend.cs" />
     <Compile Include="Email\AttachToRecordFromEmail.cs" />
     <Compile Include="Email\CreateEmailFromTemplate.cs" />
@@ -128,8 +131,20 @@
     <Compile Include="Quote\QuoteRevise.cs" />
     <Compile Include="Quote\QuoteWin.cs" />
     <Compile Include="Relationships\CascadeStatus.cs" />
+    <Compile Include="Relationships\DistributeAction.cs" />
     <Compile Include="Relationships\DistributeWorkflow.cs" />
     <Compile Include="Relationships\RelationshipOperationBase.cs" />
+    <Compile Include="Relationships\UpdateChildRecords.cs" />
+    <Compile Include="RequestBuilder\BuildRequestFromEntity.cs" />
+    <Compile Include="RequestBuilder\SetBooleanField.cs" />
+    <Compile Include="RequestBuilder\SetDateTimeField.cs" />
+    <Compile Include="RequestBuilder\SetDecimalField.cs" />
+    <Compile Include="RequestBuilder\SetFieldToNull.cs" />
+    <Compile Include="RequestBuilder\SetOptionSetField.cs" />
+    <Compile Include="RequestBuilder\SetIntField.cs" />
+    <Compile Include="RequestBuilder\SetLookupField.cs" />
+    <Compile Include="RequestBuilder\SetMoneyField.cs" />
+    <Compile Include="RequestBuilder\SetStringField.cs" />
     <Compile Include="SalesOrder\SalesOrderAddDetail.cs" />
     <Compile Include="SalesOrder\SalesOrderGetResolution.cs" />
     <Compile Include="SalesOrder\SalesOrderClose.cs" />
@@ -142,6 +157,7 @@
     <Compile Include="Security\AddUserToTeam.cs" />
     <Compile Include="Security\IsUserHasRole.cs" />
     <Compile Include="Security\IsUserMemberOfTeam.cs" />
+    <Compile Include="Security\IsUserTeamsHaveRole.cs" />
     <Compile Include="Security\RemoveUserFromRecordTeam.cs" />
     <Compile Include="Security\RemoveUserFromTeam.cs" />
     <Compile Include="Security\ShareRecordWithTeam.cs" />

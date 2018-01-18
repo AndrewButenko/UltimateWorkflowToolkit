@@ -1,11 +1,9 @@
-﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Workflow;
-using System;
+﻿using System.Linq;
 using System.Activities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using Microsoft.Xrm.Sdk.Workflow;
 
 namespace UltimateWorkflowToolkit.Common
 {
@@ -43,14 +41,15 @@ namespace UltimateWorkflowToolkit.Common
             private set;
         }
 
+        public UWTSettings Settings
+        {
+            get;
+            private set;
+        }
+
         #endregion Properties
 
         #region CTOR
-
-        private WorkflowContext()
-        {
-            throw new Exception("Don't user default CTOR");
-        }
 
         public WorkflowContext(CodeActivityContext executionContext)
         {
@@ -61,8 +60,36 @@ namespace UltimateWorkflowToolkit.Common
             UserService = serviceFactory.CreateOrganizationService(WorkflowExecutionContext.UserId);
             SystemService = serviceFactory.CreateOrganizationService(null);
             TracingService = executionContext.GetExtension<ITracingService>();
+
+            var settingsQuery = new QueryExpression("uwt_settings")
+            {
+                ColumnSet = new ColumnSet("uwt_settingsstring"),
+                TopCount = 1
+            };
+
+            var settingsRecord = SystemService.RetrieveMultiple(settingsQuery).Entities.FirstOrDefault();
+
+            if (settingsRecord != null && settingsRecord.Contains("uwt_settingsstring"))
+            {
+                try
+                {
+                    Settings =
+                        JsonConvert.DeserializeObject<UWTSettings>(
+                            settingsRecord.GetAttributeValue<string>("uwt_settingsstring"));
+                }
+                catch
+                {
+                }
+            }
         }
 
         #endregion CTOR
+    }
+
+    public class UWTSettings
+    {
+        public string BingMapsKey { get; set; }
+        public string CloudConvertKey { get; set; }
+        public string CurrencylayerKey { get; set; }
     }
 }

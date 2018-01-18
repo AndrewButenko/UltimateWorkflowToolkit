@@ -5,6 +5,7 @@ using System.Activities;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
@@ -85,8 +86,6 @@ namespace UltimateWorkflowToolkit.Common
             });
 
             #endregion Log All Inputs
-
-            //ToDo: Include validation of InArguments that are marked as required
 
             try
             {
@@ -191,6 +190,145 @@ namespace UltimateWorkflowToolkit.Common
             private set;
         }
 
+        public string GetBaseUrl(string recordReference)
+        {
+            Uri uriResult;
+
+            if (Uri.TryCreate(recordReference, UriKind.Absolute, out uriResult))
+            {
+                var urlParts = recordReference.ToLower()
+                    .Split(new [] {"/main.aspx"}, StringSplitOptions.RemoveEmptyEntries);
+
+                if (urlParts[0] != recordReference.ToLower())
+                    return urlParts[0];
+            }
+
+            throw new InvalidPluginExecutionException($"{recordReference} is not valid url!");
+        }
+
+        public string SerializeDictionary(Dictionary<string, object> dictionary)
+        {
+            var rootElement = new XElement("Request");
+
+            foreach (var key in dictionary.Keys)
+            {
+                var childElement = new XElement(key);
+
+                var value = dictionary[key];
+
+                if (value == null)
+                {
+                    var isnullAttribute = new XAttribute("IsNull", true);
+                    childElement.Add(isnullAttribute);
+                }
+                else
+                {
+                    var typeName = value.GetType().ToString();
+
+                    var typeAttribute = new XAttribute("Type", typeName);
+                    childElement.Add(typeAttribute);
+
+                    switch (typeName)
+                    {
+                        case "System.Boolean":
+                        case "System.String":
+                        case "System.Int32":
+                        case "System.DateTime":
+                        case "System.Decimal":
+                            childElement.SetValue(value);
+                            break;
+                        case "Microsoft.Xrm.Sdk.OptionSetValue":
+                            childElement.SetValue(((OptionSetValue)value).Value);
+                            break;
+                        case "Microsoft.Xrm.Sdk.Money":
+                            childElement.SetValue(((Money)value).Value);
+                            break;
+                        case "Microsoft.Xrm.Sdk.EntityReference":
+                            var entityReference = (EntityReference)value;
+                            childElement.Add(new XElement("Id", entityReference.Id));
+                            childElement.Add(new XElement("LogicalName", entityReference.LogicalName));
+                            break;
+                        default:
+                            throw new InvalidPluginExecutionException($"Serialization is not implemented for {typeName} class");
+                    }
+                }
+
+                rootElement.Add(childElement);
+            }
+
+            return rootElement.ToString();
+        }
+
+        public Dictionary<string, object> DeserializeDictionary(string dictionaryString)
+        {
+            var result = new Dictionary<string, object>();
+
+            if (string.IsNullOrEmpty(dictionaryString))
+                return result;
+
+            var request = XElement.Parse(dictionaryString);
+
+            request.Elements().ToList().ForEach(e =>
+            {
+                object fieldValue;
+
+                if (e.Attribute("IsNull")?.Value == "true")
+                    fieldValue = null;
+                else
+                {
+                    if (e.Attribute("Type") == null)
+                        throw new InvalidPluginExecutionException(
+                            $"Attribute {e.Name} is not null and doesn't contain field type, can't deserialize");
+
+                    var typeName = e.Attribute("Type").Value;
+
+                    switch (typeName)
+                    {
+                        case "System.Boolean":
+                            fieldValue = bool.Parse(e.Value);
+                            break;
+                        case "System.String":
+                            fieldValue = e.Value;
+                            break;
+                        case "System.Int32":
+                            fieldValue = int.Parse(e.Value);
+                            break;
+                        case "System.DateTime":
+                            fieldValue = DateTime.Parse(e.Value);
+                            break;
+                        case "System.Decimal":
+                            fieldValue = decimal.Parse(e.Value);
+                            break;
+                        case "Microsoft.Xrm.Sdk.OptionSetValue":
+                            fieldValue = new OptionSetValue(int.Parse(e.Value));
+                            break;
+                        case "Microsoft.Xrm.Sdk.Money":
+                            fieldValue = new Money(decimal.Parse(e.Value));
+                            break;
+                        case "Microsoft.Xrm.Sdk.EntityReference":
+                            if (e.Element("Id") == null)
+                                throw new InvalidPluginExecutionException(
+                                    $"Can't parse {e.Name} node with {typeName} type - Id node is not available");
+
+                            if (e.Element("LogicalName") == null)
+                                throw new InvalidPluginExecutionException(
+                                    $"Can't parse {e.Name} node with {typeName} type - LogicalName node is not available");
+
+                            fieldValue = new EntityReference(e.Element("LogicalName").Value,
+                                new Guid(e.Element("Id").Value));
+                            break;
+                        default:
+                            throw new InvalidPluginExecutionException(
+                                $"Serialization is not implemented for {typeName} class");
+                    }
+
+                    result.Add(e.Name.ToString(), fieldValue);
+                }
+            });
+
+            return result;
+        }
+
         #endregion Publics
 
         #region Privates
@@ -253,6 +391,9 @@ namespace UltimateWorkflowToolkit.Common
         {
             var doc = new XmlDocument();
             doc.LoadXml(initialFetchXml);
+
+            if (doc.DocumentElement == null)
+                throw new InvalidPluginExecutionException("Document element of Xml is empty!");
 
             var attrs = doc.DocumentElement.Attributes;
 
