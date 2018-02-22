@@ -29,14 +29,26 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
         {
             var sourceRecord = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            var notesQuery = new QueryByAttribute("annotation")
-            {
-                ColumnSet = new ColumnSet("documentbody", "filename")
-            };
-            notesQuery.AddAttributeValue("isdocument", true);
-            notesQuery.AddAttributeValue("objectid", sourceRecord.Id);
+            var documentFilter = FilterXml.Get(Context.ExecutionContext);
 
-            var notes = QueryWithPaging(notesQuery);
+            var documentsQuery = $@"
+                <fetch>
+                  <entity name='annotation'>
+                    <attribute name='filename' />
+                    <attribute name='documentbody' />
+                    <filter type='and'>
+                     <condition attribute='isdocument' operator='eq' value='1' />
+                     <condition attribute='objectid' operator='eq' value='{sourceRecord.Id}' />";
+
+            if (!string.IsNullOrEmpty(documentFilter))
+                documentsQuery += documentFilter.Replace('"', '\'');
+
+            documentsQuery += @"
+                    </filter>
+                  </entity>
+                </fetch>";
+
+            var notes = QueryWithPaging(new FetchExpression(documentsQuery));
 
             notes.ForEach(note =>
             {

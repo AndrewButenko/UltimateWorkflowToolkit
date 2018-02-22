@@ -2,10 +2,9 @@
 using System.Activities;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
-using Newtonsoft.Json;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.System
