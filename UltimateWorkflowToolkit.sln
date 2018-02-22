@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiselectHelper", "Multis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebResources", "WebResources\WebResources.csproj", "{050FD5D5-B885-47AE-8CF5-27D980DFA4BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wiki", "Wiki\Wiki.csproj", "{47056261-D66F-41DF-8F9C-1979F508652A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{050FD5D5-B885-47AE-8CF5-27D980DFA4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{050FD5D5-B885-47AE-8CF5-27D980DFA4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{050FD5D5-B885-47AE-8CF5-27D980DFA4BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47056261-D66F-41DF-8F9C-1979F508652A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47056261-D66F-41DF-8F9C-1979F508652A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47056261-D66F-41DF-8F9C-1979F508652A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47056261-D66F-41DF-8F9C-1979F508652A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
