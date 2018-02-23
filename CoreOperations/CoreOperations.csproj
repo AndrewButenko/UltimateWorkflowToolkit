@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotation\RenameFile.cs" />
     <Compile Include="Base\BuildRequestWorkflowBase.cs" />
     <Compile Include="Base\SetFieldWorkflowBase.cs" />
     <Compile Include="Base\AddDetailWorkflowBase.cs" />
