@@ -82,6 +82,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annotation\ConvertFile.cs" />
+    <Compile Include="Annotation\OperationBaseFile.cs" />
     <Compile Include="Annotation\RenameFile.cs" />
     <Compile Include="Base\BuildRequestWorkflowBase.cs" />
     <Compile Include="Base\SetFieldWorkflowBase.cs" />

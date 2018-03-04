@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Activities;
+using System.Collections.Generic;
 using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
 using UltimateWorkflowToolkit.Common;
@@ -20,6 +23,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Common
 
         [Output("Duplicates References")]
         public OutArgument<string> DuplicatesReferences { get; set; }
+
+        [Output("Duplicates Table")]
+        public OutArgument<string> DuplicatesTable { get; set; }
 
         #endregion Input/Output Arguments
 
@@ -53,16 +59,40 @@ namespace UltimateWorkflowToolkit.CoreOperations.Common
             var baseUrl = GetBaseUrl(Record.Get(Context.ExecutionContext));
 
             var urlsResult = string.Empty;
+            var tableResult = "<table>";
+
+            var entities = new Dictionary<string, EntityMetadata>();
 
             foreach (var dupRecord in retrieveDuplicatesResponse.DuplicateCollection.Entities)
             {
-                urlsResult = urlsResult + (urlsResult == string.Empty ? string.Empty : Environment.NewLine) +
-                             baseUrl +
-                             string.Format("/main.aspx?etn={0}&pagetype=entityrecord&id={1}", dupRecord.LogicalName,
-                                 dupRecord.Id);
+                var recordUrl =
+                    $"{baseUrl}/main.aspx?etn={dupRecord.LogicalName}&pagetype=entityrecord&id={dupRecord.Id}";
+
+                urlsResult = urlsResult + (urlsResult == string.Empty ? string.Empty : Environment.NewLine) + recordUrl;
+
+                if (!entities.ContainsKey(dupRecord.LogicalName))
+                {
+                    var entityMetadata =
+                        ((RetrieveEntityResponse) Context.SystemService.Execute(new RetrieveEntityRequest()
+                        {
+                            EntityFilters = EntityFilters.Entity, 
+                            LogicalName = dupRecord.LogicalName,
+                            RetrieveAsIfPublished = true
+                        })).EntityMetadata;
+
+                    entities.Add(dupRecord.LogicalName, entityMetadata);
+                }
+
+                var displayText =
+                    dupRecord.GetAttributeValue<string>(entities[dupRecord.LogicalName].PrimaryNameAttribute) ?? "Not Available";
+
+                tableResult += $"<tr><td><a href='{recordUrl}'>{displayText}</a></td><tr>";
             }
 
+            tableResult += "</table>";
+
             DuplicatesReferences.Set(Context.ExecutionContext, urlsResult);
+            DuplicatesTable.Set(Context.ExecutionContext, tableResult);
         }
     }
 }
