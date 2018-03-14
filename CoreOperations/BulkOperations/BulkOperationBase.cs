@@ -153,7 +153,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
             {
                 try
                 {
-                    PerformOperation(childRecord);
+                    var recordForOperation = new Entity(childRecord.LogicalName, childRecord.Id);
+
+                    PerformOperation(recordForOperation);
                 }
                 catch
                 {
