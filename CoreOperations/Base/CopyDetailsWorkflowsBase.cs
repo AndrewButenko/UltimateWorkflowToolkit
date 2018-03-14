@@ -1,8 +1,8 @@
 ﻿using System.Activities;
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using Microsoft.Crm.Sdk.Messages;
 using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.Base
@@ -16,23 +16,12 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #endregion Inputs
 
-        #region Abstracts
-
         protected abstract EntityReference SourceEntityParent { get; }
-
         protected abstract EntityReference TargetEntityParent { get; }
-
         protected abstract string SourceEntity { get; }
-
         protected abstract string SourceEntityLookupFieldName { get; }
-
         protected abstract string TargetEntity { get; }
-
         protected abstract string TargetEntityLookupFieldName { get; }
-
-        #endregion Abstracts
-
-        #region Overriddes
 
         protected override void ExecuteWorkflowLogic()
         {
@@ -69,8 +58,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
                 Context.UserService.Create(targetEntity);
             }
         }
-
-        #endregion Overriddes
 
     }
 }

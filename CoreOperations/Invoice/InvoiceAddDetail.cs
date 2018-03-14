@@ -40,8 +40,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Invoice
 
         #endregion Inputs
 
-        #region Overriddes
-
         protected override string ProductEntityName => "invoicedetail";
         protected override string ParentEntityLookupFieldName => "invoiceid";
         protected override EntityReference ParentEntity => Invoice.Get(Context.ExecutionContext);
@@ -58,8 +56,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Invoice
 
             base.ProcessAdditionalFields(ref record);
         }
-
-        #endregion Overriddes
-
     }
 }

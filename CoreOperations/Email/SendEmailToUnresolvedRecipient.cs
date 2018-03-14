@@ -20,8 +20,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #endregion Inputs/Outputs
 
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             var emailId = Email.Get(Context.ExecutionContext).Id;
@@ -42,8 +40,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
             if (SendAfterOperation.Get(Context.ExecutionContext))
                 base.ExecuteWorkflowLogic();
         }
-
-        #endregion Overriddes
-
     }
 }

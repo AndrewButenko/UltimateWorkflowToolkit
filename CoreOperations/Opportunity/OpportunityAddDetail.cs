@@ -16,8 +16,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Opportunity
 
         #endregion Input Arguments
 
-        #region Overriddes
-
         protected override string ProductEntityName => "opportunityproduct";
         protected override string ParentEntityLookupFieldName => "opportunityid";
         protected override EntityReference ParentEntity => Opportunity.Get(Context.ExecutionContext);
@@ -25,7 +23,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Opportunity
         protected override void ProcessAdditionalFields(ref Entity record)
         {
         }
-
-        #endregion Overriddes
     }
 }

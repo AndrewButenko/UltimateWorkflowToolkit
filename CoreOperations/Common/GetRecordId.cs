@@ -1,11 +1,10 @@
 ﻿using System.Activities;
 using Microsoft.Xrm.Sdk.Workflow;
-using Microsoft.Crm.Sdk.Messages;
 using UltimateWorkflowToolkit.Common;
 
-namespace UltimateWorkflowToolkit.CoreOperations.System
+namespace UltimateWorkflowToolkit.CoreOperations.Common
 {
-    public class RecalculateRollup : CrmWorkflowBase
+    public class GetRecordId: CrmWorkflowBase
     {
         #region Input/Output Arguments
 
@@ -13,9 +12,11 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
         [RequiredArgument]
         public InArgument<string> Record { get; set; }
 
-        [Input("Rollup Field Name")]
-        [RequiredArgument]
-        public InArgument<string> FieldName { get; set; }
+        [Output("Id")]
+        public OutArgument<string> RecordId { get; set; }
+
+        [Output("Entity Type Name")]
+        public OutArgument<string> EntityTypeName { get; set; }
 
         #endregion Input/Output Arguments
 
@@ -23,11 +24,8 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
         {
             var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
 
-            Context.SystemService.Execute(new CalculateRollupFieldRequest()
-            {
-                FieldName = FieldName.Get(Context.ExecutionContext),
-                Target = target
-            });
+            RecordId.Set(Context.ExecutionContext, target.Id.ToString());
+            EntityTypeName.Set(Context.ExecutionContext, target.LogicalName);
         }
     }
 }

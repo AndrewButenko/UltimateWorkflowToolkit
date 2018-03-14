@@ -23,8 +23,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #endregion Inputs/Outputs
 
-        #region Overriddes 
-
         protected override void ExecuteWorkflowLogic()
         {
             var sourceRecord = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
@@ -66,7 +64,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
             if (SendAfterOperation.Get(Context.ExecutionContext))
                 base.ExecuteWorkflowLogic();
         }
-
-        #endregion Overriddes 
     }
 }

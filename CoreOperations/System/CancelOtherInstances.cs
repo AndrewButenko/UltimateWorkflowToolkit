@@ -7,9 +7,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 {
     public class CancelOtherInstances : CrmWorkflowBase
     {
-
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             Entity asyncOperation = Context.SystemService.Retrieve("asyncoperation", Context.WorkflowExecutionContext.OperationId, new ColumnSet("workflowactivationid"));
@@ -35,8 +32,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
                 Context.SystemService.Update(existingInstance);
             }
         }
-
-        #endregion Overriddes
-
     }
 }

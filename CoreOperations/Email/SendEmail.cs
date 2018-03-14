@@ -17,8 +17,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #endregion Inputs/Outputs
 
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             Context.UserService.Execute(new SendEmailRequest()
@@ -28,8 +26,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
                 TrackingToken = string.Empty
             });
         }
-
-        #endregion Overriddes
-
     }
 }

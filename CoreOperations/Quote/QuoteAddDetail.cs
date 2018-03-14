@@ -27,8 +27,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Quote
 
         #endregion Input Arguments
 
-        #region Overriddes
-
         protected override string ProductEntityName => "quotedetail";
         protected override string ParentEntityLookupFieldName => "quoteid";
         protected override EntityReference ParentEntity => Quote.Get(Context.ExecutionContext);
@@ -41,8 +39,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Quote
 
             base.ProcessAdditionalFields(ref record);
         }
-
-        #endregion Overriddes
-
     }
 }

@@ -20,8 +20,6 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        #region Overriddes
-
         protected override EntityReference SourceEntity => Opportunity.Get(Context.ExecutionContext);
 
         protected override void SetTargetEntity(EntityReference target)
@@ -34,8 +32,5 @@ namespace UltimateWorkflowToolkit.CoreOperations
         protected override string TargetEntity => "salesorder";
         protected override string TargetEntityChild => "salesorderdetail";
         protected override string TargetEntityLookupFieldName => "salesorderid";
-
-        #endregion Overriddes
-
     }
 }

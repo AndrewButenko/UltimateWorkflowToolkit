@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotation\ConvertFile.cs" />
+    <Compile Include="Annotation\DeleteFile.cs" />
     <Compile Include="Annotation\OperationBaseFile.cs" />
     <Compile Include="Annotation\RenameFile.cs" />
     <Compile Include="Base\BuildRequestWorkflowBase.cs" />
@@ -93,6 +94,10 @@
     <Compile Include="Base\CreateChildFromParentWorkflowBase.cs" />
     <Compile Include="Base\GetResolutionWorkflowBase.cs" />
     <Compile Include="Common\CheckForDuplicates.cs" />
+    <Compile Include="Common\GetRecordId.cs" />
+    <Compile Include="DateTimeRoutines\AddBusinessDays.cs" />
+    <Compile Include="DateTimeRoutines\FormatDateTime.cs" />
+    <Compile Include="DateTimeRoutines\Split.cs" />
     <Compile Include="Email\AttachNotesToEmailAndSend.cs" />
     <Compile Include="Email\AttachToRecordFromEmail.cs" />
     <Compile Include="Email\CreateEmailFromTemplate.cs" />
@@ -133,11 +138,11 @@
     <Compile Include="Quote\QuoteGetProductsFromOpportunity.cs" />
     <Compile Include="Quote\QuoteRevise.cs" />
     <Compile Include="Quote\QuoteWin.cs" />
-    <Compile Include="Relationships\CascadeStatus.cs" />
-    <Compile Include="Relationships\DistributeAction.cs" />
-    <Compile Include="Relationships\DistributeWorkflow.cs" />
-    <Compile Include="Relationships\RelationshipOperationBase.cs" />
-    <Compile Include="Relationships\UpdateChildRecords.cs" />
+    <Compile Include="BulkOperations\CascadeStatus.cs" />
+    <Compile Include="BulkOperations\DistributeAction.cs" />
+    <Compile Include="BulkOperations\DistributeWorkflow.cs" />
+    <Compile Include="BulkOperations\BulkOperationBase.cs" />
+    <Compile Include="BulkOperations\UpdateRecords.cs" />
     <Compile Include="RequestBuilder\BuildRequestFromEntity.cs" />
     <Compile Include="RequestBuilder\SetBooleanField.cs" />
     <Compile Include="RequestBuilder\SetDateTimeField.cs" />
@@ -175,8 +180,6 @@
     <Compile Include="System\RecalculateAllRollups.cs" />
     <Compile Include="System\RecalculateRollup.cs" />
     <Compile Include="System\RefreshCurrencyExchangeRates.cs" />
-    <Compile Include="Base\ViewOperationWorkflowBase.cs" />
-    <Compile Include="Views\ViewDistributeWorkflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="BuildScript\Build.ps1" />

@@ -21,8 +21,6 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        #region Overrides
-
         protected override Guid ParentRecordId => Quote.Get(Context.ExecutionContext).Id;
 
         protected override string ResolutionEntityName => "quoteclose";
@@ -33,7 +31,5 @@ namespace UltimateWorkflowToolkit.CoreOperations
         {
             QuoteClose.Set(Context.ExecutionContext, resolution);
         }
-
-        #endregion Overrides
     }
 }

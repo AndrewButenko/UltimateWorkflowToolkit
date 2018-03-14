@@ -3,9 +3,9 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
 
-namespace UltimateWorkflowToolkit.CoreOperations.Relationships
+namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 {
-    public class DistributeWorkflow : RelationshipOperationBase
+    public class DistributeWorkflow : BulkOperationBase
     {
         #region Input Parameters
 
@@ -16,7 +16,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #endregion Input Parameters
 
-        protected override void PerformRelationshipOperation(Entity childRecord)
+        protected override void PerformOperation(Entity childRecord)
         {
             Context.UserService.Execute(new ExecuteWorkflowRequest()
             {

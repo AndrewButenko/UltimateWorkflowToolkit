@@ -18,8 +18,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
         #endregion Input/Output Arguments
 
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             var target = ConvertToEntityReference(Record.Get(Context.ExecutionContext));
@@ -33,7 +31,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
 
             var entityMetadata = retrieveEntityResponse.EntityMetadata;
 
-            entityMetadata.Attributes.Where(a => a.SourceType == 2 && (a.GetType() != typeof(MoneyAttributeMetadata) || (a.GetType() == typeof(MoneyAttributeMetadata) && ((MoneyAttributeMetadata)a).CalculationOf == null))).Select(a => a.LogicalName).ToList().ForEach(fieldName => {
+            entityMetadata.Attributes.Where(a => a.SourceType == 2 && (a.GetType() != typeof(MoneyAttributeMetadata) || (a is MoneyAttributeMetadata && ((MoneyAttributeMetadata)a).CalculationOf == null))).Select(a => a.LogicalName).ToList().ForEach(fieldName => {
                 Context.SystemService.Execute(new CalculateRollupFieldRequest()
                 {
                     FieldName = fieldName,
@@ -41,8 +39,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
                 });
             });
         }
-
-        #endregion Overriddes
-
     }
 }

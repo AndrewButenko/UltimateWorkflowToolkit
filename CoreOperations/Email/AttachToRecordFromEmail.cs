@@ -23,8 +23,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
 
         #endregion Inputs
 
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             var attachmentsQuery = new QueryByAttribute("activitymimeattachment")
@@ -50,8 +48,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Email
                 Context.UserService.Create(note);
             });
         }
-
-        #endregion Overriddes
-
     }
 }

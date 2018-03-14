@@ -13,14 +13,23 @@ namespace UltimateWorkflowToolkit.CoreOperations.Annotation
     {
         #region Inputs/Outputs
 
+        [Input("Resulting File Name")]
+        [RequiredArgument]
+        public InArgument<string> ResultingFileName { get; set; }
+
         [Input("Replace Original File")]
         [RequiredArgument]
         public InArgument<bool> IsReplaceOriginalFile { get; set; }
 
         #endregion Inputs/Outputs
 
-        protected override void ExecuteOperation(Entity file, EntityReference parentRecord, string currentFileName, string resultingFileName)
+        protected override void ExecuteOperation(Entity file, EntityReference parentRecord, string currentFileName)
         {
+            var resultingFileName = ResultingFileName.Get(Context.ExecutionContext);
+
+            if (string.IsNullOrEmpty(resultingFileName))
+                throw new InvalidPluginExecutionException("Resulting File Name Parameter is empty!");
+
             var resultingFileNameParts = resultingFileName.Split('.');
             var currentFileNameParts = currentFileName.Split('.');
 

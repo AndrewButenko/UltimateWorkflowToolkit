@@ -19,13 +19,9 @@ namespace UltimateWorkflowToolkit.CoreOperations.Annotation
         [RequiredArgument]
         public InArgument<string> CurrentFileName { get; set; }
 
-        [Input("Resulting File Name")]
-        [RequiredArgument]
-        public InArgument<string> ResultingFileName { get; set; }
-
         #endregion Inputs/Outputs
 
-        protected abstract void ExecuteOperation(Entity file, EntityReference parentRecord, string currentFileName, string resultingFileName);
+        protected abstract void ExecuteOperation(Entity file, EntityReference parentRecord, string currentFileName);
 
         protected override void ExecuteWorkflowLogic()
         {
@@ -38,11 +34,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Annotation
 
             if (string.IsNullOrEmpty(currentFileName))
                 throw new InvalidPluginExecutionException("Current File Name Parameter is empty!");
-
-            var resultingFileName = ResultingFileName.Get(Context.ExecutionContext);
-
-            if (string.IsNullOrEmpty(resultingFileName))
-                throw new InvalidPluginExecutionException("Resulting File Name Parameter is empty!");
 
             var recordReference = ConvertToEntityReference(record);
 
@@ -62,7 +53,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Annotation
                 throw new InvalidPluginExecutionException($"File {currentFileName} is not available for current record");
             }
 
-            ExecuteOperation(file, recordReference, currentFileName, resultingFileName);
+            ExecuteOperation(file, recordReference, currentFileName);
         }
     }
 }

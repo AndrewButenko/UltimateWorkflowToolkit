@@ -2,9 +2,9 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
-namespace UltimateWorkflowToolkit.CoreOperations.Relationships
+namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 {
-    public class UpdateChildRecords : RelationshipOperationBase
+    public class UpdateRecords : BulkOperationBase
     {
         #region Inputs
 
@@ -13,7 +13,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Relationships
 
         #endregion Inputs
 
-        protected override void PerformRelationshipOperation(Entity childRecord)
+        protected override void PerformOperation(Entity childRecord)
         {
             var request = DeserializeDictionary(SerializedObject.Get(Context.ExecutionContext));
 

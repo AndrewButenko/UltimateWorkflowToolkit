@@ -33,11 +33,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        #region Abstract Methods
-
         public abstract EntityReference Principal { get; }
-
-        #endregion Abstract Methods
 
         protected override void ExecuteWorkflowLogic()
         {

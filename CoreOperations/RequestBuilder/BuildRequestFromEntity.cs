@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Activities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
@@ -28,8 +25,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.RequestBuilder
         public InArgument<string> DestinationFields { get; set; }
 
         #endregion Inputs
-
-        #region Overrides
 
         protected override void BuildRequest(ref Dictionary<string, object> request)
         {
@@ -56,7 +51,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.RequestBuilder
                 request.Add(destinationFields[i], targetFieldValue);
             }
         }
-
-        #endregion Overrides
     }
 }

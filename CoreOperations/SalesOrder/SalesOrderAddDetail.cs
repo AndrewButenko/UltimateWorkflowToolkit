@@ -40,8 +40,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.SalesOrder
 
         #endregion Inputs
 
-        #region Overriddes
-
         protected override string ProductEntityName => "salesorderdetail";
         protected override string ParentEntityLookupFieldName => "salesorderid";
         protected override EntityReference ParentEntity => SalesOrder.Get(Context.ExecutionContext);
@@ -58,7 +56,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.SalesOrder
 
             base.ProcessAdditionalFields(ref record);
         }
-
-        #endregion Overriddes
     }
 }

@@ -21,8 +21,6 @@ namespace UltimateWorkflowToolkit.CoreOperations
 
         #endregion Input/Output Parameters
 
-        #region Overrides
-
         protected override Guid ParentRecordId => Opportunity.Get(Context.ExecutionContext).Id;
 
         protected override string ResolutionEntityName => "opportunityclose";
@@ -33,7 +31,5 @@ namespace UltimateWorkflowToolkit.CoreOperations
         {
             OpportunityClose.Set(Context.ExecutionContext, resolution);
         }
-
-        #endregion Overrides
     }
 }

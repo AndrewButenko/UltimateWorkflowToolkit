@@ -8,10 +8,10 @@ using System.Reflection;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Microsoft.Xrm.Sdk.Metadata.Query;
 using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Sdk.Workflow;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Metadata.Query;
 
 namespace UltimateWorkflowToolkit.Common
 {
@@ -32,13 +32,7 @@ namespace UltimateWorkflowToolkit.Common
 
         #endregion
 
-        #region Abstract methods
-
         protected abstract void ExecuteWorkflowLogic();
-
-        #endregion Abstracts methods    
-
-        #region Overrides
 
         protected override void Execute(CodeActivityContext executionContext)
         {
@@ -95,17 +89,13 @@ namespace UltimateWorkflowToolkit.Common
             }
             catch (Exception e)
             {
-                if (IsThrowException.Get(Context.ExecutionContext) || Context.WorkflowExecutionContext.WorkflowMode == (int)WorkflowExecutionMode.RealTime)
+                if (IsThrowException.Get(Context.ExecutionContext) || Context.IsSyncMode)
                     throw;
 
                 IsExceptionOccured.Set(executionContext, true);
                 ErrorMessage.Set(executionContext, e.Message);
             }
         }
-
-        #endregion Overrides
-
-        #region Publics
 
         public EntityReference ConvertToEntityReference(string recordReference)
         {
@@ -329,10 +319,6 @@ namespace UltimateWorkflowToolkit.Common
             return result;
         }
 
-        #endregion Publics
-
-        #region Privates
-
         private EntityReference ParseUrlToEntityReference(string url)
         {
             var uri = new Uri(url);
@@ -414,9 +400,6 @@ namespace UltimateWorkflowToolkit.Common
 
             return doc.OuterXml;
         }
-
-        #endregion Privates
-
     }
 
     internal enum WorkflowExecutionMode : int

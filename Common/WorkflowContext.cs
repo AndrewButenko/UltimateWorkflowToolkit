@@ -47,9 +47,9 @@ namespace UltimateWorkflowToolkit.Common
             private set;
         }
 
-        #endregion Properties
+        public bool IsSyncMode => WorkflowExecutionContext != null && WorkflowExecutionContext.WorkflowMode == (int) WorkflowExecutionMode.RealTime;
 
-        #region CTOR
+        #endregion Properties
 
         public WorkflowContext(CodeActivityContext executionContext)
         {
@@ -69,21 +69,17 @@ namespace UltimateWorkflowToolkit.Common
 
             var settingsRecord = SystemService.RetrieveMultiple(settingsQuery).Entities.FirstOrDefault();
 
-            if (settingsRecord != null && settingsRecord.Contains("uwt_settingsstring"))
+            if (settingsRecord == null || !settingsRecord.Contains("uwt_settingsstring")) return;
+            try
             {
-                try
-                {
-                    Settings =
-                        JsonConvert.DeserializeObject<UWTSettings>(
-                            settingsRecord.GetAttributeValue<string>("uwt_settingsstring"));
-                }
-                catch
-                {
-                }
+                Settings =
+                    JsonConvert.DeserializeObject<UWTSettings>(
+                        settingsRecord.GetAttributeValue<string>("uwt_settingsstring"));
+            }
+            catch
+            {
             }
         }
-
-        #endregion CTOR
     }
 
     public class UWTSettings

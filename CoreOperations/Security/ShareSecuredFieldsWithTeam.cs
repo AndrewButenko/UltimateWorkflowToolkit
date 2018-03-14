@@ -15,10 +15,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Security
 
         #endregion Input/Output Parameters
 
-        #region Overrides
-
         public override EntityReference Principal => Team.Get(Context.ExecutionContext);
-
-        #endregion Overrides
     }
 }

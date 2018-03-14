@@ -41,14 +41,10 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #endregion Inputs
 
-        #region Abstracts
-
         protected abstract string ProductEntityName { get; }
         protected abstract string ParentEntityLookupFieldName { get; }
         protected abstract EntityReference ParentEntity { get; }
         protected abstract void ProcessAdditionalFields(ref Entity record);
-
-        #endregion Abstracts
 
         protected override void ExecuteWorkflowLogic()
         {

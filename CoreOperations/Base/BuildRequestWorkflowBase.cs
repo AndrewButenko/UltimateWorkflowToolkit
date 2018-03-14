@@ -15,13 +15,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #endregion Inputs
 
-        #region Abstract Members
-
         protected abstract void BuildRequest(ref Dictionary<string, object> request);
-
-        #endregion Abstract Members
-
-        #region Overrides
 
         protected override void ExecuteWorkflowLogic()
         {
@@ -32,7 +26,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
             SerializedObject.Set(Context.ExecutionContext, SerializeDictionary(request));
         }
-
-        #endregion Overrides
     }
 }

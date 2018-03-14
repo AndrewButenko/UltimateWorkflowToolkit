@@ -16,24 +16,13 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #endregion Inputs
 
-        #region Abstracts
-
         protected abstract EntityReference SourceEntity { get; }
-
         protected abstract void SetTargetEntity(EntityReference target);
-
         protected abstract string SourceEntityChild { get; }
-
         protected abstract string SourceEntityLookupFieldName { get; }
-
         protected abstract string TargetEntity { get; }
-
         protected abstract string TargetEntityChild { get; }
-
         protected abstract string TargetEntityLookupFieldName { get; }
-
-        #endregion Abstracts
-
 
         protected override void ExecuteWorkflowLogic()
         {

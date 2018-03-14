@@ -48,8 +48,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
 
         #endregion Inputs
 
-        #region Overrides
-
         protected override void ProcessAdditionalFields(ref Entity record)
         {
             if (record == null)
@@ -68,8 +66,5 @@ namespace UltimateWorkflowToolkit.CoreOperations.Base
             record["shipto_telephone"] = ShipToTelephone.Get(Context.ExecutionContext);
             record["willcall"] = WillCall.Get(Context.ExecutionContext);
         }
-
-        #endregion Overrides
-
     }
 }

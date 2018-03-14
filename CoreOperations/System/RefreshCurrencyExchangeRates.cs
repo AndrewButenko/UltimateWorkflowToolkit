@@ -9,13 +9,8 @@ using UltimateWorkflowToolkit.Common;
 
 namespace UltimateWorkflowToolkit.CoreOperations.System
 {
-
-
     public class RefreshCurrencyExchangeRates : CrmWorkflowBase
     {
-
-        #region Overriddes
-
         protected override void ExecuteWorkflowLogic()
         {
             #region Get All Currencies From Endpoint and check that call was successfull
@@ -116,5 +111,4 @@ Info: {errorToken.SelectToken("info").Value<string>()}";
         }
     }
 
-    #endregion Overriddes
 }

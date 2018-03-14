@@ -1,5 +1,4 @@
-﻿using System;
-using System.Activities;
+﻿using System.Activities;
 using System.Collections.Generic;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -29,7 +28,7 @@ namespace UltimateWorkflowToolkit.MultiselectHelper
         {
             get
             {
-                if (Context == null || Context.ExecutionContext == null)
+                if (Context?.ExecutionContext == null)
                     return null;
 
                 var recordReference = ConvertToEntityReference(RecordReferenceString.Get(Context.ExecutionContext));
@@ -42,10 +41,7 @@ namespace UltimateWorkflowToolkit.MultiselectHelper
         {
             get
             {
-                if (Context?.ExecutionContext == null)
-                    return null;
-
-                return FieldNameString.Get(Context.ExecutionContext);
+                return Context?.ExecutionContext == null ? null : FieldNameString.Get(Context.ExecutionContext);
             }
         }
 
