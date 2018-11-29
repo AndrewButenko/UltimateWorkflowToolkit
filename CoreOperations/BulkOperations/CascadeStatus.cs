@@ -2,6 +2,7 @@
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 using Microsoft.Crm.Sdk.Messages;
+using System.Collections.Generic;
 
 namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 {
@@ -19,14 +20,25 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 
         #endregion Input Parameters
 
-        protected override void PerformOperation(Entity childRecord)
+        protected override void PerformOperation(List<Entity> childRecords, bool isContinueOnError)
         {
-            Context.UserService.Execute(new SetStateRequest()
+            foreach (var childRecord in childRecords)
             {
-                EntityMoniker = childRecord.ToEntityReference(),
-                State = new OptionSetValue(StateCode.Get(Context.ExecutionContext)),
-                Status = new OptionSetValue(StatusCode.Get(Context.ExecutionContext))
-            });
+                try
+                {
+                    Context.UserService.Execute(new SetStateRequest()
+                    {
+                        EntityMoniker = childRecord.ToEntityReference(),
+                        State = new OptionSetValue(StateCode.Get(Context.ExecutionContext)),
+                        Status = new OptionSetValue(StatusCode.Get(Context.ExecutionContext))
+                    });
+                }
+                catch
+                {
+                    if (!isContinueOnError || Context.IsSyncMode)
+                        throw;
+                }
+            }
         }
     }
 }

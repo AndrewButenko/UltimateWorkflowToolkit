@@ -1,6 +1,7 @@
 ﻿using System.Activities;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
+using System.Collections.Generic;
 
 namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 {
@@ -13,16 +14,29 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 
         #endregion Inputs
 
-        protected override void PerformOperation(Entity childRecord)
+        protected override void PerformOperation(List<Entity> childRecords, bool isContinueOnError)
         {
             var request = DeserializeDictionary(SerializedObject.Get(Context.ExecutionContext));
 
-            foreach (var key in request.Keys)
+            foreach (var childRecord in childRecords)
             {
-                childRecord[key] = request[key];
-            }
+                var recordToUpdate = new Entity(childRecord.LogicalName, childRecord.Id);
 
-            Context.UserService.Update(childRecord);
+                foreach (var key in request.Keys)
+                {
+                    recordToUpdate[key] = request[key];
+                }
+
+                try
+                {
+                    Context.UserService.Update(recordToUpdate);
+                }
+                catch
+                {
+                    if (!isContinueOnError || Context.IsSyncMode)
+                        throw;
+                }
+            }
         }
     }
 }

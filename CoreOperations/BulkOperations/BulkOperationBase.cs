@@ -41,7 +41,8 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 
         #endregion Input/Output Parameters
 
-        protected abstract void PerformOperation(Entity childRecord);
+        protected abstract void PerformOperation(List<Entity> childRecords, bool isContinueOnError);
+        protected string FetchXml;
 
         protected override void ExecuteWorkflowLogic()
         {
@@ -96,17 +97,17 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
                     childEntityName = onetonRelationship.ReferencingEntity;
                 }
 
-                var childRecordsFetchXml = $@"
+                FetchXml = $@"
                 <fetch>
                   <entity name='{childEntityName}'>
-                    <attribute name='{childEntityName}id' />";
+                    <all-attributes />";
 
                 var additionalConditions = AdditionalFilterArgument.Get(Context.ExecutionContext);
 
                 if (!string.IsNullOrEmpty(additionalConditions))
-                    childRecordsFetchXml += $"<filter type='and'>{additionalConditions.Replace('"', '\'')}</filter>";
+                    FetchXml += $"<filter type='and'>{additionalConditions.Replace('"', '\'')}</filter>";
 
-                childRecordsFetchXml += @"
+                FetchXml += @"
                     </entity>
                 </fetch>";
 
@@ -116,7 +117,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
                     Target = record,
                     RelatedEntitiesQuery = new RelationshipQueryCollection
                     {
-                        {relationship, new FetchExpression(childRecordsFetchXml)}
+                        {relationship, new FetchExpression(FetchXml)}
                     }
                 };
 
@@ -128,41 +129,28 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
             {
                 var publicView = PublicView.Get(Context.ExecutionContext);
                 var privateView = PrivateView.Get(Context.ExecutionContext);
-                var fetchXml = FetchXmlQuery.Get(Context.ExecutionContext);
+                FetchXml = FetchXmlQuery.Get(Context.ExecutionContext);
 
                 if (publicView == null &&
                     privateView == null &&
-                    fetchXml == null)
+                    FetchXml == null)
                     throw new InvalidPluginExecutionException("One of 'Record Reference'/'Relationship Name', 'Public View', 'Private View' or 'Fetch Xml Query' inputs has to be populated!");
 
                 if (publicView != null)
                 {
-                    fetchXml = Context.SystemService.Retrieve(publicView.LogicalName, publicView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
+                    FetchXml = Context.SystemService.Retrieve(publicView.LogicalName, publicView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
                 }
                 else if (privateView != null)
                 {
-                    fetchXml = Context.SystemService.Retrieve(privateView.LogicalName, privateView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
+                    FetchXml = Context.SystemService.Retrieve(privateView.LogicalName, privateView.Id, new ColumnSet("fetchxml")).GetAttributeValue<string>("fetchxml");
                 }
 
-                records = QueryWithPaging(new FetchExpression(fetchXml));
+                records = QueryWithPaging(new FetchExpression(FetchXml));
             }
 
             var isContinueOnError = IsContinueOnError.Get(Context.ExecutionContext);
 
-            foreach (var childRecord in records)
-            {
-                try
-                {
-                    var recordForOperation = new Entity(childRecord.LogicalName, childRecord.Id);
-
-                    PerformOperation(recordForOperation);
-                }
-                catch
-                {
-                    if (!isContinueOnError || Context.IsSyncMode)
-                        throw;
-                }
-            }
+            PerformOperation(records, isContinueOnError);
         }
     }
 }

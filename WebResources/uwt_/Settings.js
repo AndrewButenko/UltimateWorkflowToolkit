@@ -31,6 +31,12 @@
 
                     if (typeof settingsobject.CurrencylayerKey !== "undefined")
                         $("#teCurrencylayerKey").val(settingsobject.CurrencylayerKey);
+
+                    if (typeof settingsobject.BaseUrl === "undefined") {
+                        settingsobject.BaseUrl = GetGlobalContext().getClientUrl();
+                    }
+
+                    $("#teBaseUrl").val(settingsobject.BaseUrl);
                 }
             }
         };
@@ -50,6 +56,10 @@
 
         if ($("#teCurrencylayerKey").val() != null) {
             settingsobject.CurrencylayerKey = $("#teCurrencylayerKey").val();
+        }
+
+        if ($("#teBaseUrl").val() != null) {
+            settingsobject.BaseUrl = $("#teBaseUrl").val();
         }
 
         var settingsRecord = {

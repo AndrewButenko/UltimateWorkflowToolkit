@@ -38,7 +38,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
             if (string.IsNullOrWhiteSpace(address))
                 throw new InvalidPluginExecutionException("Address parameter is not available");
 
-            var url = $"http://dev.virtualearth.net/REST/v1/Locations?q={address}&key={Context.Settings.BingMapsKey}";
+            var url = $"http://dev.virtualearth.net/REST/v1/Locations?q={Uri.EscapeDataString(address)}&key={Context.Settings.BingMapsKey}";
 
             string jsonResult = null;
 

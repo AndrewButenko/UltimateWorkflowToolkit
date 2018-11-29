@@ -56,7 +56,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework" />
@@ -148,6 +148,7 @@
     <Compile Include="RequestBuilder\SetDateTimeField.cs" />
     <Compile Include="RequestBuilder\SetDecimalField.cs" />
     <Compile Include="RequestBuilder\SetFieldToNull.cs" />
+    <Compile Include="RequestBuilder\SetLookupFieldFromQuery.cs" />
     <Compile Include="RequestBuilder\SetOptionSetField.cs" />
     <Compile Include="RequestBuilder\SetIntField.cs" />
     <Compile Include="RequestBuilder\SetLookupField.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Security\ShareSecuredFieldsWithUser.cs" />
     <Compile Include="Security\UnshareRecordWithTeam.cs" />
     <Compile Include="Security\UnshareRecordWithUser.cs" />
+    <Compile Include="StringRoutines\StringJoin.cs" />
     <Compile Include="System\CancelOtherInstances.cs" />
     <Compile Include="System\GeoCodeAddress.cs" />
     <Compile Include="System\RecalculateAllRollups.cs" />

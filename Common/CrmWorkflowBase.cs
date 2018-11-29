@@ -180,22 +180,6 @@ namespace UltimateWorkflowToolkit.Common
             private set;
         }
 
-        public string GetBaseUrl(string recordReference)
-        {
-            Uri uriResult;
-
-            if (Uri.TryCreate(recordReference, UriKind.Absolute, out uriResult))
-            {
-                var urlParts = recordReference.ToLower()
-                    .Split(new [] {"/main.aspx"}, StringSplitOptions.RemoveEmptyEntries);
-
-                if (urlParts[0] != recordReference.ToLower())
-                    return urlParts[0];
-            }
-
-            throw new InvalidPluginExecutionException($"{recordReference} is not valid url!");
-        }
-
         public string SerializeDictionary(Dictionary<string, object> dictionary)
         {
             var rootElement = new XElement("Request");

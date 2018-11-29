@@ -87,5 +87,6 @@ namespace UltimateWorkflowToolkit.Common
         public string BingMapsKey { get; set; }
         public string CloudConvertKey { get; set; }
         public string CurrencylayerKey { get; set; }
+        public string BaseUrl { get; set; }
     }
 }

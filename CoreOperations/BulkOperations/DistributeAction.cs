@@ -1,4 +1,5 @@
 ﻿using System.Activities;
+using System.Collections.Generic;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Workflow;
 
@@ -17,7 +18,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
 
         #endregion Inputs
     
-        protected override void PerformOperation(Entity childRecord)
+        protected override void PerformOperation(List<Entity> childRecords, bool isContinueOnError)
         {
             var request = DeserializeDictionary(SerializedObject.Get(Context.ExecutionContext));
 
@@ -28,9 +29,20 @@ namespace UltimateWorkflowToolkit.CoreOperations.BulkOperations
                 organizationRequest[key] = request[key];
             }
 
-            organizationRequest["Target"] = childRecord.ToEntityReference();
+            foreach (var childRecord in childRecords)
+            {
+                try
+                {
+                    organizationRequest["Target"] = childRecord.ToEntityReference();
 
-            Context.UserService.Execute(organizationRequest);
+                    Context.UserService.Execute(organizationRequest);
+                }
+                catch
+                {
+                    if (!isContinueOnError || Context.IsSyncMode)
+                        throw;
+                }
+            }
         }
     }
 }

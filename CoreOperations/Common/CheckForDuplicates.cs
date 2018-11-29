@@ -56,8 +56,6 @@ namespace UltimateWorkflowToolkit.CoreOperations.Common
             if (!dupsExist)
                 return;
 
-            var baseUrl = GetBaseUrl(Record.Get(Context.ExecutionContext));
-
             var urlsResult = string.Empty;
             var tableResult = "<table>";
 
@@ -66,7 +64,7 @@ namespace UltimateWorkflowToolkit.CoreOperations.Common
             foreach (var dupRecord in retrieveDuplicatesResponse.DuplicateCollection.Entities)
             {
                 var recordUrl =
-                    $"{baseUrl}/main.aspx?etn={dupRecord.LogicalName}&pagetype=entityrecord&id={dupRecord.Id}";
+                    $"{Context.Settings.BaseUrl}/main.aspx?etn={dupRecord.LogicalName}&pagetype=entityrecord&id={dupRecord.Id}";
 
                 urlsResult = urlsResult + (urlsResult == string.Empty ? string.Empty : Environment.NewLine) + recordUrl;
 
