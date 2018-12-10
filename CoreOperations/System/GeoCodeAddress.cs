@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Activities;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Newtonsoft.Json;
 using Microsoft.Xrm.Sdk;
@@ -55,9 +56,18 @@ namespace UltimateWorkflowToolkit.CoreOperations.System
                 throw new InvalidPluginExecutionException($"BingMaps Endpoint call failed - {string.Join(Environment.NewLine, response.ErrorDetails)}{Environment.NewLine}{response.StatusDescription}");
             }
 
+            var geocodePoint = response.ResourceSets.FirstOrDefault()?.Resources.FirstOrDefault()?.GeocodePoints
+                .FirstOrDefault();
+
+            if (geocodePoint == null)
+            {
+                IsResolved.Set(Context.ExecutionContext, false);
+                return;
+            }
+
             IsResolved.Set(Context.ExecutionContext, true);
-            Latitude.Set(Context.ExecutionContext, Convert.ToDecimal(response.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[0]));
-            Longitude.Set(Context.ExecutionContext, Convert.ToDecimal(response.ResourceSets[0].Resources[0].GeocodePoints[0].Coordinates[1]));
+            Latitude.Set(Context.ExecutionContext, Convert.ToDecimal(geocodePoint.Coordinates[0]));
+            Longitude.Set(Context.ExecutionContext, Convert.ToDecimal(geocodePoint.Coordinates[1]));
         }
     }
 
